@@ -20,7 +20,15 @@ public class Programa {
                     menu.cadastrarPaciente(c);
                     break;
                 case 2:
-                    // Criar a função no menu e chamar aqui
+                    menu.cadastrarMedico(c);
+                    break;
+
+
+
+
+                case 8:
+                    System.out.println(c.getPacientes());
+                    break;
             }
         }
 
