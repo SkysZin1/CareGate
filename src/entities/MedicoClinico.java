@@ -1,3 +1,5 @@
+// feito por Gustavo  - (25/05/26)
+
 package entities;
 
 import java.time.LocalDate;
