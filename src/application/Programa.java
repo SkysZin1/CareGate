@@ -5,12 +5,16 @@ import application.FuncoesMenu;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static entities.MedicoInicializador.inicializaMedicos;
+
+
 public class Programa {
 
     static void main(String[] args) {
         FuncoesMenu menu = new FuncoesMenu();
         Scanner sc = new Scanner(System.in);
         Clinica c = new Clinica();
+        inicializaMedicos(c);
         int opcao = -1;
         while(opcao != 0){
             menu.exibirMenu();
@@ -24,7 +28,9 @@ public class Programa {
                     break;
 
 
-
+                case 7:
+                    System.out.println(c.getMedicos());
+                    break;
 
                 case 8:
                     System.out.println(c.getPacientes());
@@ -35,4 +41,5 @@ public class Programa {
 
 
     }
+
 }

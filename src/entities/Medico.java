@@ -17,6 +17,17 @@ private Integer idade, valorConsultaBase;
         this.valorConsultaBase = valorConsultaBase;
     }
 
+    @Override
+    public String toString() {
+        return "Medico{" +
+                "nome='" + nome + '\'' +
+                ", CRM='" + CRM + '\'' +
+                ", especialidade='" + especialidade + '\'' +
+                ", idade=" + idade +
+                ", valorConsultaBase=" + valorConsultaBase +
+                '}' + '\n';
+    }
+
     public Medico() {
     }
 
