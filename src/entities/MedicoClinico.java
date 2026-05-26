@@ -26,6 +26,6 @@ public class MedicoClinico extends Medico {
 
     @Override
     public String obterProtocoloAtendimento() {
-        return "";
+        return "Diagnostica e trata doenças não cirúrgicas, solicita exames, prescreve medicamentos e, quando necessário, encaminha o paciente para um médico especialista";
     }
 }

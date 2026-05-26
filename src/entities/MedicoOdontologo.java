@@ -27,6 +27,6 @@ public class MedicoOdontologo extends Medico {
 
     @Override
     public String obterProtocoloAtendimento() {
-        return "";
+        return "Prevenir, diagnosticar e tratar problemas que afetam os dentes, a gengiva, a língua, o céu da boca e os ossos da face";
     }
 }

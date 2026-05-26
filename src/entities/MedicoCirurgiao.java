@@ -26,6 +26,6 @@ public class MedicoCirurgiao extends Medico {
 
     @Override
     public String obterProtocoloAtendimento() {
-        return "";
+        return "Diagnosticar, avaliar e realizar intervenções cirúrgicas";
     }
 }
