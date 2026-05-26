@@ -2,12 +2,12 @@
 
 package entities;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public abstract class Medico {
-String nome, CRM, especialidade;
-Integer idade, valorConsultaBase;
+private String nome, CRM, especialidade;
+private Integer idade, valorConsultaBase;
+
 
     public Medico(String nome, String CRM, String especialidade, Integer idade, Integer valorConsultaBase) {
         this.nome = nome;
@@ -15,6 +15,9 @@ Integer idade, valorConsultaBase;
         this.especialidade = especialidade;
         this.idade = idade;
         this.valorConsultaBase = valorConsultaBase;
+    }
+
+    public Medico() {
     }
 
     public abstract Integer calcularValorConsulta();
@@ -25,4 +28,43 @@ Integer idade, valorConsultaBase;
 
     public abstract String obterProtocoloAtendimento();
 
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCRM() {
+        return CRM;
+    }
+
+    public void setCRM(String CRM) {
+        this.CRM = CRM;
+    }
+
+    public String getEspecialidade() {
+        return especialidade;
+    }
+
+    public void setEspecialidade(String especialidade) {
+        this.especialidade = especialidade;
+    }
+
+    public Integer getIdade() {
+        return idade;
+    }
+
+    public void setIdade(Integer idade) {
+        this.idade = idade;
+    }
+
+    public Integer getValorConsultaBase() {
+        return valorConsultaBase;
+    }
+
+    public void setValorConsultaBase(Integer valorConsultaBase) {
+        this.valorConsultaBase = valorConsultaBase;
+    }
 }
