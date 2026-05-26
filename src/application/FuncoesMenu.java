@@ -37,6 +37,7 @@ public class FuncoesMenu {  // Classe Auxiliar ao programa principal.
 
         Paciente paciente = new Paciente(nome, cpf, telefone, endereco);
         clinica.addPaciente(paciente);
+        System.out.println("✓ Paciente cadastrado com sucesso!");
 
     }
 
@@ -79,6 +80,7 @@ public class FuncoesMenu {  // Classe Auxiliar ao programa principal.
                     System.out.println("Por favor digite um valor valido");
             }
         }
+        System.out.println("✓ Médico cadastrado com sucesso!");
     }
 
 

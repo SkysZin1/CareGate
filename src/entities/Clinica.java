@@ -34,4 +34,8 @@ public class Clinica {
     public ArrayList<Consulta> getHistoricoConsulta() {
         return historicoConsulta;
     }
+
+    public void inicializaClinica(){
+        // Colocar aqui TODOS os 21 medicos e 7 pacientes de teste, criar eles e adicionar no respectivo array
+    }
 }
