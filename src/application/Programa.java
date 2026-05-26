@@ -1,23 +1,20 @@
 package application;
 
 import entities.*;
-import application.FuncoesMenu;
-import java.util.ArrayList;
-import java.util.Scanner;
 
-import static entities.MedicoInicializador.inicializaMedicos;
+import java.util.Scanner;
 
 
 public class Programa {
 
     static void main(String[] args) {
-        FuncoesMenu menu = new FuncoesMenu();
+        Menu menu = new Menu();
         Scanner sc = new Scanner(System.in);
         Clinica c = new Clinica();
-        inicializaMedicos(c);
+        Inicializacao.inicializaMedicos(c);
         int opcao = -1;
         while(opcao != 0){
-            menu.exibirMenu();
+            Menu.exibirMenu();
             opcao = sc.nextInt();
             switch(opcao){
                 case 1:

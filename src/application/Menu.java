@@ -6,9 +6,9 @@ import entities.*;
 
 import java.util.Scanner;
 
-public class FuncoesMenu {  // Classe Auxiliar ao programa principal.
+public class Menu {  // Classe Auxiliar ao programa principal.
     Scanner sc = new Scanner(System.in);
-    public void exibirMenu(){
+    public static void exibirMenu(){
         System.out.println("\n╔════════════════════════════════════════╗");
         System.out.println("║ CareGate - SISTEMA DE GESTÃO DE CLÍNICA║");
         System.out.println("╚════════════════════════════════════════╝");
