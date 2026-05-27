@@ -23,19 +23,29 @@ public class Clinica {
         historicoConsulta.add(consulta);
     }
 
-    public ArrayList<Medico> getMedicos() {
-        return medicos;
+    public void getMedicos() {
+        System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", "Nome", "CRM", "Especialidade", "Idade", "Valor da Consulta Base");
+        System.out.println("--------------------------------------------------------------------------------");
+        for (Medico medico : medicos){
+            System.out.printf("%-15s %-15s %-15s %-15d %-15d%n", medico.getNome(), medico.getCRM(), medico.getEspecialidade(), medico.getIdade(), medico.getValorConsultaBase());
+        }
     }
 
-    public ArrayList<Paciente> getPacientes() {
-        return pacientes;
+    public void getPacientes() {
+        System.out.printf("%-15s %-15s %-15s %-15s%n", "Nome", "Endereço", "CPF", "Telefone");
+        System.out.println("--------------------------------------------------------------------------------");
+        for (Paciente paciente : pacientes){
+            System.out.printf("%-15s %-15s %-15s %-15s%n", paciente.getNome(), paciente.getEndereco(), paciente.getCpf(), paciente.getTelefone());
+        }
+
     }
 
-    public ArrayList<Consulta> getHistoricoConsulta() {
-        return historicoConsulta;
+    public void getHistoricoConsulta() {
+        System.out.printf("%-15s %-15s %-15s %-15s%n", "Médico", "Paciente", "Data", "Diagnostico");
+        System.out.println("--------------------------------------------------------------------------------");
+        for (Consulta consulta : historicoConsulta){
+            System.out.printf("%-15s %-15s %-15s %-15s%n", consulta.getMedico().getNome(), consulta.getPaciente().getNome(), consulta.getDataConsulta(), consulta.getDiagnostico());
+        }
     }
 
-    public void inicializaClinica(){
-        // Colocar aqui TODOS os 21 medicos e 7 pacientes de teste, criar eles e adicionar no respectivo array
-    }
 }

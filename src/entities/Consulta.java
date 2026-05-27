@@ -14,8 +14,28 @@ public class Consulta {
         this.diagnostico =  diagnostico;
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
+    public Medico getMedico() {
+        return medico;
+    }
+    public void setMedico(Medico medico) {
+        this.medico = medico;
+    }
+    public Paciente getPaciente() {
+        return paciente;
+    }
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
+    }
+    public LocalDateTime getDataConsulta() {
+        return dataConsulta;
+    }
+    public void setDataConsulta(LocalDateTime dataConsulta) {
+        this.dataConsulta = dataConsulta;
+    }
+    public String getDiagnostico() {
+        return diagnostico;
+    }
+    public void setDiagnostico(String diagnostico) {
+        this.diagnostico = diagnostico;
     }
 }

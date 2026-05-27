@@ -16,7 +16,7 @@ public class Menu {  // Classe Auxiliar ao programa principal.
         System.out.println("[2] Cadastrar Médico");
         System.out.println("[3] Agendar Consulta");
         System.out.println("[4] Realizar Consulta");
-        System.out.println("[5] Listar Consultas do Mês");
+        System.out.println("[5] Listar Historico de Consultas");
         System.out.println("[6] Buscar Histórico de Paciente");
         System.out.println("[7] Listar Todos os Médicos");
         System.out.println("[8] Listar Todos os Pacientes");

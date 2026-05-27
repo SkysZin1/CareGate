@@ -25,12 +25,18 @@ public class Programa {
                     break;
 
 
+                case 5:
+                    c.getHistoricoConsulta();
+                    break;
+                case 6:
+
+
                 case 7:
-                    System.out.println(c.getMedicos());
+                    c.getMedicos();
                     break;
 
                 case 8:
-                    System.out.println(c.getPacientes());
+                    c.getPacientes();
                     break;
             }
         }
