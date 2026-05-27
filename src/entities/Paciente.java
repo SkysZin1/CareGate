@@ -1,5 +1,5 @@
 // feito por Davi - (25/05/26)
-
+// editado por miguel - (27/05/26)
 package entities;
 import java.util.ArrayList;
 import java.util.List;
