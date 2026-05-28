@@ -1,6 +1,7 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Clinica {
 
@@ -8,19 +9,42 @@ public class Clinica {
     ArrayList<Paciente> pacientes = new ArrayList<>();
     ArrayList<Consulta> historicoConsulta = new ArrayList<>();
 
+    HashMap<String, Medico> mapaMedico = new HashMap<>();
+    HashMap<String, Paciente> mapaPaciente = new HashMap<>();
+
     public Clinica(){
     }
 
     public void addMedico(Medico medico){
         medicos.add(medico);
+        mapaMedico.put(medico.getCRM(), medico);
     }
 
     public void addPaciente(Paciente paciente){
         pacientes.add(paciente);
+        mapaPaciente.put(paciente.getCpf(), paciente);
+    }
+
+    public void removeMedico(String crm){
+        medicos.removeIf(medico -> medico.getCRM().equals(crm));
+        mapaMedico.remove(crm);
+    }
+
+    public void removePaciente(String cpf){
+        pacientes.removeIf(paciente -> paciente.getCpf().equals(cpf));
+        mapaPaciente.remove(cpf);
     }
 
     public void addConsulta(Consulta consulta){
         historicoConsulta.add(consulta);
+    }
+
+    public Medico getMedicoByCRM(String crm){
+        return mapaMedico.get(crm);
+    }
+
+    public Paciente getPacienteByCPF(String cpf){
+        return mapaPaciente.get(cpf);
     }
 
     public void getMedicos() {

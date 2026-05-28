@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Menu {  // Classe Auxiliar ao programa principal.
     Scanner sc = new Scanner(System.in);
     public static void exibirMenu(){
-            limparConsole();
+            
             System.out.println("\n╔════════════════════════════════════════╗");
             System.out.println("║ CareGate - SISTEMA DE GESTÃO DE CLÍNICA║");
             System.out.println("╚════════════════════════════════════════╝");
@@ -23,7 +23,7 @@ public class Menu {  // Classe Auxiliar ao programa principal.
     }
 
     public static void exibirMenuMedicos() {
-        limparConsole();
+        
         System.out.println("\n╔════════════════════════════════════════╗");
         System.out.println("║         GERENCIAR MÉDICOS              ║");
         System.out.println("╚════════════════════════════════════════╝");
@@ -34,7 +34,7 @@ public class Menu {  // Classe Auxiliar ao programa principal.
     }
 
     public static void exibirMenuPacientes() {
-        limparConsole();
+        
         System.out.println("\n╔════════════════════════════════════════╗");
         System.out.println("║         GERENCIAR PACIENTES            ║");
         System.out.println("╚════════════════════════════════════════╝");
@@ -44,7 +44,7 @@ public class Menu {  // Classe Auxiliar ao programa principal.
         System.out.println("[0] Voltar\n");
     }
     public void cadastrarPaciente(Clinica clinica){
-        limparConsole();
+        
         System.out.println("Digite o nome do Paciente");
         String nome = sc.nextLine();
         System.out.println("Digite o CPF do Paciente");
@@ -60,8 +60,16 @@ public class Menu {  // Classe Auxiliar ao programa principal.
 
     }
 
+    public void removerPaciente(Clinica clinica){
+        
+        System.out.println("Digite o CPF do Paciente");
+        String cpf = sc.nextLine();
+        clinica.removePaciente(cpf);
+        System.out.println("✓ Paciente removido com sucesso!");
+    }
+
     public void cadastrarMedico(Clinica clinica){
-        limparConsole();
+        
         System.out.println("Digite o nome do Medico");
         String nome = sc.nextLine();
         System.out.println("Digite o CRM do Medico");
@@ -102,19 +110,24 @@ public class Menu {  // Classe Auxiliar ao programa principal.
         System.out.println("✓ Médico cadastrado com sucesso!");
     }
 
-
-
-
-
-
-
-
-
-
-    public static void limparConsole() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+    public void  removerMedico(Clinica clinica){
+        
+        System.out.println("Digite o CRM do Medico (CRM/** ******)");
+        String crm = sc.nextLine();
+        clinica.removeMedico(crm);
+        System.out.println("✓ Médico removido com sucesso!");
     }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
