@@ -1,0 +1,9 @@
+# ignorar pasta out
+
+CareGate/out/
+
+out/
+
+# ignorar config pessoal
+
+.idea/discord.xml

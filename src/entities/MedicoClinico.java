@@ -15,6 +15,10 @@ public class MedicoClinico extends Medico implements Agendavel, Prescritor {
         super(nome, CRM, especialidade, idade, valorConsultaBase);
     }
 
+    public MedicoClinico() {
+
+    }
+
     @Override
     public Integer calcularValorConsulta() {
         return 150;
@@ -32,7 +36,57 @@ public class MedicoClinico extends Medico implements Agendavel, Prescritor {
 
     @Override
     public String obterProtocoloAtendimento() {
-        return "";
+        return "Diagnostica e trata doenças não cirúrgicas, solicita exames, prescreve medicamentos e, quando necessário, encaminha o paciente para um médico especialista";
+    }
+
+    @Override
+    public String getNome() {
+        return super.getNome();
+    }
+
+    @Override
+    public void setNome(String nome) {
+        super.setNome(nome);
+    }
+
+    @Override
+    public String getCRM() {
+        return super.getCRM();
+    }
+
+    @Override
+    public void setCRM(String CRM) {
+        super.setCRM(CRM);
+    }
+
+    @Override
+    public String getEspecialidade() {
+        return super.getEspecialidade();
+    }
+
+    @Override
+    public void setEspecialidade(String especialidade) {
+        super.setEspecialidade(especialidade);
+    }
+
+    @Override
+    public Integer getIdade() {
+        return super.getIdade();
+    }
+
+    @Override
+    public void setIdade(Integer idade) {
+        super.setIdade(idade);
+    }
+
+    @Override
+    public Integer getValorConsultaBase() {
+        return super.getValorConsultaBase();
+    }
+
+    @Override
+    public void setValorConsultaBase(Integer valorConsultaBase) {
+        super.setValorConsultaBase(valorConsultaBase);
     }
 
      @Override

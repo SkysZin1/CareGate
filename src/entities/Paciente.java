@@ -55,4 +55,14 @@ public class Paciente {
     public List<Consulta> getConsultas() {
         return consultas;
     }
+
+    @Override
+    public String toString() {
+        return "Paciente{" +
+                "nome='" + nome + '\'' +
+                ", endereco='" + endereco + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", telefone='" + telefone + '\'' +
+                '}';
+    }
 }
