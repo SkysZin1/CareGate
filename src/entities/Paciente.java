@@ -63,7 +63,6 @@ public class Paciente {
                 ", endereco='" + endereco + '\'' +
                 ", cpf='" + cpf + '\'' +
                 ", telefone='" + telefone + '\'' +
-                ", consultas=" + consultas +
                 '}';
     }
 }

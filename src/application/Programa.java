@@ -12,6 +12,7 @@ public class Programa {
         Scanner sc = new Scanner(System.in);
         Clinica c = new Clinica();
         Inicializacao.inicializaMedicos(c);
+        Inicializacao.inicializaPacientes(c);
         int opcao = -1;
         while(opcao != 0){
             Menu.exibirMenu();
