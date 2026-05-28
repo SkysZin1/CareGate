@@ -36,7 +36,15 @@ public class Inicializacao {
         c.addMedico(new MedicoOdontologo("Maria", "CRM/BA 128456", "Odontopediatria", 27, odontologoBase.calcularValorConsulta()));
         c.addMedico(new MedicoOdontologo("Eduarda", "CRM/BA 129456", "Periodontia", 62, odontologoBase.calcularValorConsulta()));
         c.addMedico(new MedicoOdontologo("Luciano", "CRM/BA 120456", "Buco-Maxilo-Facial", 44, odontologoBase.calcularValorConsulta()));
-
     }
 
+    public static void inicializaPacientes(Clinica c) {
+        c.addPaciente(new Paciente("Arduíno", "Rua Casa Nossa, 1404", "123.456.789-01", "71 99876-5432"));
+        c.addPaciente(new Paciente("Uelintão", "Rua Madre Mia, 20", "123.456.789-02", "71 99876-5433"));
+        c.addPaciente(new Paciente("Jairzinho", "Travessa Jair Ventura, 52", "123.456.789-03", "71 99876-5434"));
+        c.addPaciente(new Paciente("Feijão", "Rua Fonte Nossa, 10", "123.456.789-04", "71 99876-5435"));
+        c.addPaciente(new Paciente("Fernando Neto", "Alameda dos Nervos, 74", "123.456.789-05", "71 99876-5436"));
+        c.addPaciente(new Paciente("Artêmio", "Rua Menino Rildo, 61", "123.456.789-06", "71 99876-5437"));
+        c.addPaciente(new Paciente("Manoel Gomes", "Rua Canto dos Gremistas, 5", "123.456.789-07", "71 99876-5438"));
+    }
 }
