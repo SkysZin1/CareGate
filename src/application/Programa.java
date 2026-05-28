@@ -15,7 +15,7 @@ public class Programa {
         Inicializacao.inicializaPacientes(c);
         int opcao = -1;
         int opcao2 = -1;
-        while(opcao != 0){  // Releitura do menu necessaria
+        while(opcao != 0){
             Menu.exibirMenu();
             opcao = sc.nextInt();
             switch(opcao){

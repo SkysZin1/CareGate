@@ -48,7 +48,7 @@ public class Clinica {
     }
 
     public void getMedicos() {
-        System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", "Nome", "CRM", "Especialidade", "Idade", "Valor da Consulta Base");
+        System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", "  Nome", "   CRM", "Especialidade", "Idade", "Valor da Consulta Base");
         System.out.println("--------------------------------------------------------------------------------");
         for (Medico medico : medicos){
             System.out.printf("%-15s %-15s %-15s %-15d %-15d%n", medico.getNome(), medico.getCRM(), medico.getEspecialidade(), medico.getIdade(), medico.getValorConsultaBase());
@@ -56,10 +56,10 @@ public class Clinica {
     }
 
     public void getPacientes() {
-        System.out.printf("%-15s %-15s %-15s %-15s%n", "Nome", "Endereço", "CPF", "Telefone");
-        System.out.println("--------------------------------------------------------------------------------");
+        System.out.printf("%-30s %-30s %-30s %-30s%n", "  Nome", "     Endereço", "      CPF", "   Telefone");
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------");
         for (Paciente paciente : pacientes){
-            System.out.printf("%-15s %-15s %-15s %-15s%n", paciente.getNome(), paciente.getEndereco(), paciente.getCpf(), paciente.getTelefone());
+            System.out.printf("%-30s %-30s %-30s %-30s%n", paciente.getNome(), paciente.getEndereco(), paciente.getCpf(), paciente.getTelefone());
         }
 
     }
