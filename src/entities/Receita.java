@@ -1,4 +1,5 @@
 // feito por Davi - (25/05/26)
+// editado por Miguel - (27/05/26)
 
 package entities;
 import java.util.ArrayList;
@@ -7,6 +8,11 @@ import java.util.List;
 public class Receita {
     private List <Medicamento> listaMedicamentos = new ArrayList<>();
     private LocalDate data;
+
+
+    public Receita() {
+    
+    }
 
     public Receita(LocalDate data) {
         this.data = data;
