@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Programa {
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
         Menu menu = new Menu();
         Scanner sc = new Scanner(System.in);
         Clinica c = new Clinica();
