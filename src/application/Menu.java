@@ -3,29 +3,48 @@
 package application;
 
 import entities.*;
-
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Menu {  // Classe Auxiliar ao programa principal.
     Scanner sc = new Scanner(System.in);
     public static void exibirMenu(){
-        System.out.println("\n╔════════════════════════════════════════╗");
-        System.out.println("║ CareGate - SISTEMA DE GESTÃO DE CLÍNICA║");
-        System.out.println("╚════════════════════════════════════════╝");
-        System.out.println("\n[1] Cadastrar Paciente");
-        System.out.println("[2] Cadastrar Médico");
-        System.out.println("[3] Agendar Consulta");
-        System.out.println("[4] Realizar Consulta");
-        System.out.println("[5] Listar Historico de Consultas");
-        System.out.println("[6] Buscar Histórico de Paciente");
-        System.out.println("[7] Listar Todos os Médicos");
-        System.out.println("[8] Listar Todos os Pacientes");
-        System.out.println("[9] Gerar Relatório Financeiro");
-        System.out.println("[0] Sair\n");
+            limparConsole();
+            System.out.println("\n╔════════════════════════════════════════╗");
+            System.out.println("║ CareGate - SISTEMA DE GESTÃO DE CLÍNICA║");
+            System.out.println("╚════════════════════════════════════════╝");
+            System.out.println("\n[1] Gerenciar Médicos");
+            System.out.println("[2] Gerenciar Pacientes");
+            System.out.println("[3] Agendar Consulta");
+            System.out.println("[4] Realizar Consulta");
+            System.out.println("[5] Listar Histórico de Consultas");
+            System.out.println("[6] Gerar Relatório Financeiro");
+            System.out.println("[0] Sair\n");
     }
 
-    public void cadastrarPaciente(Clinica clinica){
+    public static void exibirMenuMedicos() {
+        limparConsole();
+        System.out.println("\n╔════════════════════════════════════════╗");
+        System.out.println("║         GERENCIAR MÉDICOS              ║");
+        System.out.println("╚════════════════════════════════════════╝");
+        System.out.println("\n[1] Adicionar Médico");
+        System.out.println("[2] Remover Médico");
+        System.out.println("[3] Listar Médicos");
+        System.out.println("[0] Voltar\n");
+    }
 
+    public static void exibirMenuPacientes() {
+        limparConsole();
+        System.out.println("\n╔════════════════════════════════════════╗");
+        System.out.println("║         GERENCIAR PACIENTES            ║");
+        System.out.println("╚════════════════════════════════════════╝");
+        System.out.println("\n[1] Adicionar Paciente");
+        System.out.println("[2] Remover Paciente");
+        System.out.println("[3] Listar Pacientes");
+        System.out.println("[0] Voltar\n");
+    }
+    public void cadastrarPaciente(Clinica clinica){
+        limparConsole();
         System.out.println("Digite o nome do Paciente");
         String nome = sc.nextLine();
         System.out.println("Digite o CPF do Paciente");
@@ -42,7 +61,7 @@ public class Menu {  // Classe Auxiliar ao programa principal.
     }
 
     public void cadastrarMedico(Clinica clinica){
-
+        limparConsole();
         System.out.println("Digite o nome do Medico");
         String nome = sc.nextLine();
         System.out.println("Digite o CRM do Medico");
@@ -82,6 +101,22 @@ public class Menu {  // Classe Auxiliar ao programa principal.
         }
         System.out.println("✓ Médico cadastrado com sucesso!");
     }
+
+
+
+
+
+
+
+
+
+
+    public static void limparConsole() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+
 
 
 }

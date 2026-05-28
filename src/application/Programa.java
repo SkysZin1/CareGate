@@ -13,30 +13,20 @@ public class Programa {
         Clinica c = new Clinica();
         Inicializacao.inicializaMedicos(c);
         int opcao = -1;
-        while(opcao != 0){
+        while(opcao != 0){  // Releitura do menu necessaria
             Menu.exibirMenu();
             opcao = sc.nextInt();
             switch(opcao){
                 case 1:
-                    menu.cadastrarPaciente(c);
+                    Menu.exibirMenuMedicos();
                     break;
                 case 2:
-                    menu.cadastrarMedico(c);
+                    Menu.exibirMenuPacientes();
                     break;
 
 
                 case 5:
                     c.getHistoricoConsulta();
-                    break;
-                case 6:
-
-
-                case 7:
-                    c.getMedicos();
-                    break;
-
-                case 8:
-                    c.getPacientes();
                     break;
             }
         }
