@@ -23,7 +23,7 @@ public class Programa {
             opcao = sc.nextInt();
             switch(opcao){
                 case 1:
-                    int opcao2 = -1; // Reseta o menu secundário
+                    int opcao2 = -1; // Reset para o menu de médicos
                     while(opcao2 != 0){
                         Menu.exibirMenuMedicos();
                         opcao2 = sc.nextInt();
@@ -35,7 +35,14 @@ public class Programa {
                                 menu.removerMedico(c, g);
                                 break;
                             case 3:
+                                Menu.limparConsole();
                                 c.getMedicos();
+                                while(true){
+                                    System.out.println("Digite 0 para voltar");
+                                    if(sc.nextInt() == 0){
+                                        break;
+                                    }
+                                }
                                 break;
                         }
                     }
@@ -53,14 +60,28 @@ public class Programa {
                                 menu.removerPaciente(c);
                                 break;
                             case 3:
+                                Menu.limparConsole();
                                 c.getPacientes();
+                                while(true){
+                                    System.out.println("Digite 0 para voltar");
+                                    if(sc.nextInt() == 0){
+                                        break;
+                                    }
+                                }
                                 break;
                         }
                     }
                     break;
 
                 case 5:
+                    Menu.exibirMenuPacientes();
                     c.getHistoricoConsulta();
+                    while(true){
+                        System.out.println("Digite 0 para voltar");
+                        if(sc.nextInt() == 0){
+                            break;
+                        }
+                    }
                     break;
             }
         }
