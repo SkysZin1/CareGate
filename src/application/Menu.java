@@ -6,7 +6,7 @@ import entities.*;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Menu {  // Classe Auxiliar ao programa principal.
+public class Menu {
     Scanner sc = new Scanner(System.in);
     public static void exibirMenu(){
             
@@ -68,8 +68,8 @@ public class Menu {  // Classe Auxiliar ao programa principal.
         System.out.println("✓ Paciente removido com sucesso!");
     }
 
-    public void cadastrarMedico(Clinica clinica){
-        
+    public void cadastrarMedico(Clinica clinica, Gravacao gravacao){
+
         System.out.println("Digite o nome do Medico");
         String nome = sc.nextLine();
         System.out.println("Digite o CRM do Medico");
@@ -78,7 +78,7 @@ public class Menu {  // Classe Auxiliar ao programa principal.
         String especialidade = sc.nextLine();
         System.out.println("Digite a idade");
         Integer idade = sc.nextInt();
-        System.out.println("Digite a valor do Medico");
+        System.out.println("Digite a valor da consulta do Medico");
         Integer valorConsulta = sc.nextInt();
 
         System.out.println("Qual o tipo de consulta do Medico?");
@@ -87,34 +87,42 @@ public class Menu {  // Classe Auxiliar ao programa principal.
             System.out.println("[1] Cirurgião\n[2] Clínico\n[3] Odontológico");
             int opcao = sc.nextInt();
             Medico medico = null;
+
             switch (opcao){
                 case 1:
                     medico = new MedicoCirurgiao(nome, crm, especialidade, idade, valorConsulta);
-                    clinica.addMedico(medico);
-                    aux = false;
                     break;
                 case 2:
                     medico = new MedicoClinico(nome, crm, especialidade, idade, valorConsulta);
-                    clinica.addMedico(medico);
-                    aux = false;
                     break;
                 case 3:
                     medico = new MedicoOdontologo(nome, crm, especialidade, idade, valorConsulta);
-                    clinica.addMedico(medico);
-                    aux = false;
                     break;
                 default:
                     System.out.println("Por favor digite um valor valido");
+            }
+
+            // Salva nos dois lugares (memória e disco)
+            if (medico != null) {
+                clinica.addMedico(medico);           // Salva na memória
+                gravacao.salvarNovoMedico(medico);   // Salva no txt
+                aux = false;
             }
         }
         System.out.println("✓ Médico cadastrado com sucesso!");
     }
 
-    public void  removerMedico(Clinica clinica){
-        
+    public void removerMedico(Clinica clinica, Gravacao gravacao){
+
         System.out.println("Digite o CRM do Medico (CRM/** ******)");
         String crm = sc.nextLine();
+
+        // 1. Remove da lista na memória
         clinica.removeMedico(crm);
+
+        // 2. Remove do arquivo de texto
+        gravacao.removerMedicoDoArquivo(crm);
+
         System.out.println("✓ Médico removido com sucesso!");
     }
 
