@@ -22,26 +22,74 @@ public class Menu {
             System.out.println("[0] Sair\n");
     }
 
-    public static void exibirMenuMedicos() {
-        limparConsole();
-        System.out.println("\n╔════════════════════════════════════════╗");
-        System.out.println("║         GERENCIAR MÉDICOS              ║");
-        System.out.println("╚════════════════════════════════════════╝");
-        System.out.println("\n[1] Adicionar Médico");
-        System.out.println("[2] Remover Médico");
-        System.out.println("[3] Listar Médicos");
-        System.out.println("[0] Voltar\n");
+    public static void exibirMenuMedicos(Clinica c, Gravacao g, Scanner sc, Menu menu) {
+        int opcao = -1;
+        while (opcao != 0) {
+            limparConsole();
+            System.out.println("\n╔════════════════════════════════════════╗");
+            System.out.println("║         GERENCIAR MÉDICOS              ║");
+            System.out.println("╚════════════════════════════════════════╝");
+            System.out.println("\n[1] Adicionar Médico");
+            System.out.println("[2] Remover Médico");
+            System.out.println("[3] Listar Médicos");
+            System.out.println("[0] Voltar\n");
+            opcao = sc.nextInt();
+            sc.nextLine(); // limpa o \n pendente
+            switch(opcao){
+                case 1:
+                    menu.cadastrarMedico(c, g);
+                    break;
+                case 2:
+                    menu.removerMedico(c, g);
+                    break;
+                case 3:
+                    limparConsole();
+                    c.getMedicos();
+                    while(true){
+                        System.out.println("Digite 0 para voltar");
+                        if(sc.nextInt() == 0){
+                            break;
+                        }
+                    }
+                    break;
+            }
+        }
+
     }
 
-    public static void exibirMenuPacientes() {
-        limparConsole();
-        System.out.println("\n╔════════════════════════════════════════╗");
-        System.out.println("║         GERENCIAR PACIENTES            ║");
-        System.out.println("╚════════════════════════════════════════╝");
-        System.out.println("\n[1] Adicionar Paciente");
-        System.out.println("[2] Remover Paciente");
-        System.out.println("[3] Listar Pacientes");
-        System.out.println("[0] Voltar\n");
+    public static void exibirMenuPacientes(Clinica c, Gravacao g, Scanner sc, Menu menu) {
+        int opcao = -1;
+        while (opcao != 0) {
+            limparConsole();
+            System.out.println("\n╔════════════════════════════════════════╗");
+            System.out.println("║         GERENCIAR PACIENTES            ║");
+            System.out.println("╚════════════════════════════════════════╝");
+            System.out.println("\n[1] Adicionar Paciente");
+            System.out.println("[2] Remover Paciente");
+            System.out.println("[3] Listar Pacientes");
+            System.out.println("[0] Voltar\n");
+            opcao = sc.nextInt();
+            sc.nextLine(); // limpa o \n pendente
+            switch (opcao) {
+                case 1:
+                    menu.cadastrarPaciente(c);
+                    break;
+                case 2:
+                    menu.removerPaciente(c);
+                    break;
+                case 3:
+                    Menu.limparConsole();
+                    c.getPacientes();
+                    while(true){
+                        System.out.println("Digite 0 para voltar");
+                        if(sc.nextInt() == 0){
+                            break;
+                        }
+                    }
+                    break;
+            }
+        }
+
     }
     public void cadastrarPaciente(Clinica clinica){
         limparConsole();
