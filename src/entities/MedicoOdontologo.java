@@ -15,6 +15,12 @@ public class MedicoOdontologo extends Medico {
     }
 
     @Override
+    public String paraTexto() {
+        // Guarda o identificador "Cirurgiao" no início da linha para sabermos restaurar depois
+        return "Cirurgiao," + getNome() + "," + getCRM() + "," + getEspecialidade() + "," + getIdade() + "," + getValorConsultaBase();
+    }
+
+    @Override
     public Integer calcularValorConsulta() {
         return 180;
     }

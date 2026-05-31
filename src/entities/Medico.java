@@ -17,6 +17,9 @@ private Integer idade, valorConsultaBase;
         this.valorConsultaBase = valorConsultaBase;
     }
 
+    // Métod0 abstrato que cada subclasse implementará dizendo quem ela é
+    public abstract String paraTexto();
+
     @Override
     public String toString() {
         return "Medico{" +

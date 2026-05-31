@@ -3,13 +3,13 @@
 package application;
 
 import entities.*;
+import java.io.IOException;
 import java.util.Scanner;
 
-public class Menu {  // Classe Auxiliar ao programa principal.
+public class Menu {
     Scanner sc = new Scanner(System.in);
-
     public static void exibirMenu(){
-            clearConsole();
+            
             System.out.println("\n╔════════════════════════════════════════╗");
             System.out.println("║ CareGate - SISTEMA DE GESTÃO DE CLÍNICA║");
             System.out.println("╚════════════════════════════════════════╝");
@@ -23,7 +23,7 @@ public class Menu {  // Classe Auxiliar ao programa principal.
     }
 
     public static void exibirMenuMedicos() {
-        clearConsole();
+        
         System.out.println("\n╔════════════════════════════════════════╗");
         System.out.println("║         GERENCIAR MÉDICOS              ║");
         System.out.println("╚════════════════════════════════════════╝");
@@ -34,7 +34,7 @@ public class Menu {  // Classe Auxiliar ao programa principal.
     }
 
     public static void exibirMenuPacientes() {
-        clearConsole();
+        
         System.out.println("\n╔════════════════════════════════════════╗");
         System.out.println("║         GERENCIAR PACIENTES            ║");
         System.out.println("╚════════════════════════════════════════╝");
@@ -44,7 +44,7 @@ public class Menu {  // Classe Auxiliar ao programa principal.
         System.out.println("[0] Voltar\n");
     }
     public void cadastrarPaciente(Clinica clinica){
-        clearConsole();
+        
         System.out.println("Digite o nome do Paciente");
         String nome = sc.nextLine();
         System.out.println("Digite o CPF do Paciente");
@@ -61,15 +61,15 @@ public class Menu {  // Classe Auxiliar ao programa principal.
     }
 
     public void removerPaciente(Clinica clinica){
-        clearConsole();
+        
         System.out.println("Digite o CPF do Paciente");
         String cpf = sc.nextLine();
         clinica.removePaciente(cpf);
         System.out.println("✓ Paciente removido com sucesso!");
     }
 
-    public void cadastrarMedico(Clinica clinica){
-        clearConsole();
+    public void cadastrarMedico(Clinica clinica, Gravacao gravacao){
+
         System.out.println("Digite o nome do Medico");
         String nome = sc.nextLine();
         System.out.println("Digite o CRM do Medico");
@@ -78,7 +78,7 @@ public class Menu {  // Classe Auxiliar ao programa principal.
         String especialidade = sc.nextLine();
         System.out.println("Digite a idade");
         Integer idade = sc.nextInt();
-        System.out.println("Digite a valor do Medico");
+        System.out.println("Digite a valor da consulta do Medico");
         Integer valorConsulta = sc.nextInt();
 
         System.out.println("Qual o tipo de consulta do Medico?");
@@ -87,34 +87,42 @@ public class Menu {  // Classe Auxiliar ao programa principal.
             System.out.println("[1] Cirurgião\n[2] Clínico\n[3] Odontológico");
             int opcao = sc.nextInt();
             Medico medico = null;
+
             switch (opcao){
                 case 1:
                     medico = new MedicoCirurgiao(nome, crm, especialidade, idade, valorConsulta);
-                    clinica.addMedico(medico);
-                    aux = false;
                     break;
                 case 2:
                     medico = new MedicoClinico(nome, crm, especialidade, idade, valorConsulta);
-                    clinica.addMedico(medico);
-                    aux = false;
                     break;
                 case 3:
                     medico = new MedicoOdontologo(nome, crm, especialidade, idade, valorConsulta);
-                    clinica.addMedico(medico);
-                    aux = false;
                     break;
                 default:
                     System.out.println("Por favor digite um valor valido");
+            }
+
+            // Salva nos dois lugares (memória e disco)
+            if (medico != null) {
+                clinica.addMedico(medico);           // Salva na memória
+                gravacao.salvarNovoMedico(medico);   // Salva no txt
+                aux = false;
             }
         }
         System.out.println("✓ Médico cadastrado com sucesso!");
     }
 
-    public void  removerMedico(Clinica clinica){
-        clearConsole();
+    public void removerMedico(Clinica clinica, Gravacao gravacao){
+
         System.out.println("Digite o CRM do Medico (CRM/** ******)");
         String crm = sc.nextLine();
+
+        // 1. Remove da lista na memória
         clinica.removeMedico(crm);
+
+        // 2. Remove do arquivo de texto
+        gravacao.removerMedicoDoArquivo(crm);
+
         System.out.println("✓ Médico removido com sucesso!");
     }
 
@@ -124,35 +132,12 @@ public class Menu {  // Classe Auxiliar ao programa principal.
 
 
 
-    // Limpa o console. Tenta executar um comando de sistema quando há um console real,
-    // caso contrário envia códigos ANSI e, por fim, imprime múltiplas linhas como fallback.
-    public static void clearConsole(){
-        try{
-            String os = System.getProperty("os.name").toLowerCase();
-            // Se houver um console real (terminal), tenta usar o comando apropriado
-            if (System.console() != null){
-                Process proc;
-                if (os.contains("windows")){
-                    proc = new ProcessBuilder("cmd", "/c", "cls").inheritIO().start();
-                } else {
-                    proc = new ProcessBuilder("clear").inheritIO().start();
-                }
-                try {
-                    proc.waitFor();
-                } catch(InterruptedException e){
-                    Thread.currentThread().interrupt();
-                }
-            } else {
-                // Caso não haja console (p.ex. IntelliJ Run tool window), tenta códigos ANSI
-                System.out.print("\033[H\033[2J");
-                System.out.flush();
-                // Como último recurso, imprime várias linhas para simular limpeza
-                for (int i = 0; i < 50; i++) System.out.println();
-            }
-        } catch(Exception e){
-            // Fallback simples
-            for (int i = 0; i < 50; i++) System.out.println();
-        }
-    }
+
+
+
+
+
+
+
 
 }
