@@ -1,9 +1,18 @@
 # ignorar pasta out
-
 CareGate/out/
-
 out/
 
 # ignorar config pessoal
-
 .idea/discord.xml
+
+# Arquivos compilados Java
+*.class
+*.jar
+
+# Pastas de compilação
+build/
+src/**/*.class
+
+# Arquivos temporários
+medicos.txt
+

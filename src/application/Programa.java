@@ -21,47 +21,22 @@ public class Programa {
         while(opcao != 0){
             Menu.exibirMenu();
             opcao = sc.nextInt();
+            sc.nextLine(); // limpa o \n pendente
             switch(opcao){
                 case 1:
-                    int opcao2 = -1; // Reseta o menu secundário
-                    while(opcao2 != 0){
-                        Menu.exibirMenuMedicos();
-                        opcao2 = sc.nextInt();
-                        switch (opcao2) {
-                            case 1:
-                                menu.cadastrarMedico(c, g);
-                                break;
-                            case 2:
-                                menu.removerMedico(c, g);
-                                break;
-                            case 3:
-                                c.getMedicos();
-                                break;
-                        }
-                    }
+                    Menu.exibirMenuMedicos(c, g, sc, menu);
                     break;
                 case 2:
-                    int opcao3 = -1; // Reset para o menu de pacientes
-                    while(opcao3 != 0){
-                        Menu.exibirMenuPacientes();
-                        opcao3 = sc.nextInt();
-                        switch (opcao3) {
-                            case 1:
-                                menu.cadastrarPaciente(c);
-                                break;
-                            case 2:
-                                menu.removerPaciente(c);
-                                break;
-                            case 3:
-                                c.getPacientes();
-                                break;
-                        }
-                    }
+                    Menu.exibirMenuPacientes(c, g, sc, menu);
                     break;
-
                 case 5:
                     c.getHistoricoConsulta();
-                    break;
+                    while(true){
+                        System.out.println("Digite 0 para voltar");
+                        if(sc.nextInt() == 0){
+                            break;
+                        }
+                    }
             }
         }
     }
