@@ -14,5 +14,5 @@ build/
 src/**/*.class
 
 # Arquivos temporários
-medicos.txt
+data/*
 
