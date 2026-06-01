@@ -15,8 +15,13 @@ for /d %%i in ("%BUILD_DIR%\*") do del /q "%%i\*.class" 2>nul
 
 REM Compila todos os .java da pasta source para build
 echo Compilando...
-cd /d "%SOURCE_DIR%"
+pushd "%SOURCE_DIR%"
 javac -d "%BUILD_DIR%" application\*.java entities\*.java
+set "JC_ERR=%ERRORLEVEL%"
+popd
+if %JC_ERR% neq 0 (
+    exit /b %JC_ERR%
+)
 
 if %errorlevel% neq 0 (
     echo.
@@ -31,9 +36,8 @@ echo [OK] Compilacao concluida com sucesso!
 echo.
 echo Iniciando aplicacao...
 echo.
-cd /d "%BUILD_DIR%"
 title %TITLE%
-java -cp . application.Programa
+java -cp "%BUILD_DIR%" application.Programa
 
 pause
 

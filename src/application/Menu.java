@@ -72,10 +72,10 @@ public class Menu {
             sc.nextLine(); // limpa o \n pendente
             switch (opcao) {
                 case 1:
-                    menu.cadastrarPaciente(c);
+                    menu.cadastrarPaciente(c, g);
                     break;
                 case 2:
-                    menu.removerPaciente(c);
+                    menu.removerPaciente(c, g);
                     break;
                 case 3:
                     Menu.limparConsole();
@@ -91,7 +91,7 @@ public class Menu {
         }
 
     }
-    public void cadastrarPaciente(Clinica clinica){
+    public void cadastrarPaciente(Clinica clinica, Gravacao gravacao){
         limparConsole();
         System.out.println("Digite o nome do Paciente");
         String nome = sc.nextLine();
@@ -106,20 +106,21 @@ public class Menu {
         String telefone = sc.nextLine();
         System.out.println("Digite o endereco do Paciente");
         String endereco = sc.nextLine();
-
-        Paciente paciente = new Paciente(nome, cpf, telefone, endereco);
+        Paciente paciente = new Paciente(nome, endereco, cpf, telefone);
         clinica.addPaciente(paciente);
+        gravacao.salvarNovoPaciente(paciente);
         System.out.println("Paciente cadastrado com sucesso!");
         esperar(2000); // Tempo para o usuario ver a mensagem de sucesso
 
 
     }
 
-    public void removerPaciente(Clinica clinica){
+    public void removerPaciente(Clinica clinica, Gravacao gravacao){
         limparConsole();
         System.out.println("Digite o CPF do Paciente");
         String cpf = sc.nextLine();
         clinica.removePaciente(cpf);
+        gravacao.removerPacienteDoArquivo(cpf);
         System.out.println("Paciente removido com sucesso!");
         esperar(2000); // Tempo para o usuario ver a mensagem de sucesso
 
