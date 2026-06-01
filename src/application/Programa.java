@@ -11,18 +11,7 @@ public class Programa {
         Clinica c = new Clinica();
         Gravacao g = new Gravacao();
 
-        if (g.arquivoTemDados()) {
-            g.carregarMedicos(c);
-        } else {
-            Inicializacao.inicializarMedicosPadrao(c, g); // Cria os médicos e salva no arquivo
-        }
-
-        // Pacientes: carregar se existir arquivo, senão inicializar com pacientes padrão
-        if (g.arquivoTemDadosPacientes()) {
-            g.carregarPacientes(c);
-        } else {
-            Inicializacao.inicializarPacientesPadrao(c, g);
-        }
+        Inicializacao.Inicializar(c, g); // Inicializa os dados padrão
 
         int opcao = -1;
         while(opcao != 0){
