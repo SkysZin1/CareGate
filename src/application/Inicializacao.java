@@ -39,16 +39,16 @@ public class Inicializacao {
     }
 
     public static void inicializarPacientesPadrao(Clinica c, Gravacao g) {
-        adicionarESalvarPaciente(c, g, new Paciente("Ana Silva", "Rua das Flores, 123", "12345678901", "71999990001"));
-        adicionarESalvarPaciente(c, g, new Paciente("Bruno Costa", "Av. Brasil, 45", "22345678901", "71999990002"));
-        adicionarESalvarPaciente(c, g, new Paciente("Carla Souza", "Rua do Sol, 78", "32345678901", "71999990003"));
-        adicionarESalvarPaciente(c, g, new Paciente("Diego Lima", "Trav. das Oliveiras, 12", "42345678901", "71999990004"));
-        adicionarESalvarPaciente(c, g, new Paciente("Eva Pereira", "Alameda Central, 9", "52345678901", "71999990005"));
-        adicionarESalvarPaciente(c, g, new Paciente("Felipe Rocha", "Rua Nova, 200", "62345678901", "71999990006"));
-        adicionarESalvarPaciente(c, g, new Paciente("Gabriela Alves", "Praça da Alegria, 1", "72345678901", "71999990007"));
-        adicionarESalvarPaciente(c, g, new Paciente("Hugo Martins", "Av. dos Coqueiros, 77", "82345678901", "71999990008"));
-        adicionarESalvarPaciente(c, g, new Paciente("Iara Mendes", "Rua Vitória, 33", "92345678901", "71999990009"));
-        adicionarESalvarPaciente(c, g, new Paciente("João Ferreira", "Loteamento Verde, 10", "02345678901", "71999990010"));
+        adicionarESalvarPaciente(c, g, new Paciente("Ana Silva", "Rua das Flores 123", "12345678901", "71999990001"));
+        adicionarESalvarPaciente(c, g, new Paciente("Bruno Costa", "Av. Brasil 45", "22345678901", "71999990002"));
+        adicionarESalvarPaciente(c, g, new Paciente("Carla Souza", "Rua do Sol 78", "32345678901", "71999990003"));
+        adicionarESalvarPaciente(c, g, new Paciente("Diego Lima", "Trav. das Oliveiras 12", "42345678901", "71999990004"));
+        adicionarESalvarPaciente(c, g, new Paciente("Eva Pereira", "Alameda Central 9", "52345678901", "71999990005"));
+        adicionarESalvarPaciente(c, g, new Paciente("Felipe Rocha", "Rua Nova 200", "62345678901", "71999990006"));
+        adicionarESalvarPaciente(c, g, new Paciente("Gabriela Alves", "Praça da Alegria 1", "72345678901", "71999990007"));
+        adicionarESalvarPaciente(c, g, new Paciente("Hugo Martins", "Av. dos Coqueiros 77", "82345678901", "71999990008"));
+        adicionarESalvarPaciente(c, g, new Paciente("Iara Mendes", "Rua Vitória 33", "92345678901", "71999990009"));
+        adicionarESalvarPaciente(c, g, new Paciente("João Ferreira", "Loteamento Verde 10", "02345678901", "71999990010"));
     }
 
     // Métod0 para garantir que o paciente vá tanto para a lista na memória quanto para o arquivo TXT
