@@ -112,7 +112,6 @@ public class Menu {
         System.out.println("Paciente cadastrado com sucesso!");
         esperar(2000); // Tempo para o usuario ver a mensagem de sucesso
 
-
     }
 
     public void removerPaciente(Clinica clinica, Gravacao gravacao){

@@ -20,16 +20,6 @@ private Integer idade, valorConsultaBase;
     // Métod0 abstrato que cada subclasse implementará dizendo quem ela é
     public abstract String paraTexto();
 
-    @Override
-    public String toString() {
-        return "Medico{" +
-                "nome='" + nome + '\'' +
-                ", CRM='" + CRM + '\'' +
-                ", especialidade='" + especialidade + '\'' +
-                ", idade=" + idade +
-                ", valorConsultaBase=" + valorConsultaBase +
-                '}' + '\n';
-    }
 
     public Medico() {
     }
