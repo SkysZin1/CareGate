@@ -89,7 +89,7 @@ public class MedicoClinico extends Medico implements Agendavel, Prescritor {
         super.setValorConsultaBase(valorConsultaBase);
     }
 
-     @Override
+    @Override
     public List<String> obterHorariosDisponiveis() {
         List<String> horarios = new ArrayList<>();
         return horarios;
