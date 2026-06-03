@@ -1,5 +1,9 @@
 package entities;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,6 +49,27 @@ public class Clinica {
 
     public Paciente getPacienteByCPF(String cpf){
         return mapaPaciente.get(cpf);
+    }
+
+    public Consulta agendarConsulta(String cpf, String crm, String data) {
+        Medico medico = getMedicoByCRM(crm);
+        Paciente paciente = getPacienteByCPF(cpf);
+        if (medico == null || paciente == null) {
+            return null;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDateTime dataConsulta;
+        try {
+            LocalDate localDate = LocalDate.parse(data, formatter);
+            dataConsulta = localDate.atStartOfDay();
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+
+        Consulta consulta = new Consulta(medico, paciente, dataConsulta, "");
+        addConsulta(consulta);
+        return consulta;
     }
 
     public void getMedicos() {

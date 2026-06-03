@@ -216,6 +216,32 @@ public class Menu {
             Thread.currentThread().interrupt();
         }
     }
+    public void agendarConsulta(Clinica clinica, Scanner sc, Gravacao gravacao){
+        limparConsole();
+        System.out.println("Digite o CPF do Paciente");
+        String cpf = sc.nextLine();
+        System.out.println("Digite o CRM do Medico");
+        String crm = sc.nextLine();
+        Medico medico = clinica.getMedicoByCRM(crm);
+        if (medico == null) {
+            System.out.println("Médico não encontrado!");
+            esperar(2000);
+            return;
+        }
+        System.out.println("Digite a data da consulta (dd/MM/yyyy)");
+        String data = sc.nextLine();
+
+        Consulta consulta = clinica.agendarConsulta(cpf, crm, data);
+        if (consulta == null) {
+            System.out.println("Falha ao agendar a consulta. Verifique CPF, CRM e formato da data (dd/MM/yyyy).");
+            esperar(2000);
+            return;
+        }
+
+        gravacao.salvarNovaConsulta(consulta);
+        System.out.println("Consulta agendada com sucesso!");
+        esperar(2000); // Tempo para o usuario ver a mensagem de sucesso    
+    }
 
 
 
