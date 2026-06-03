@@ -7,11 +7,16 @@ public class Consulta {
     private Paciente paciente;
     private LocalDateTime dataConsulta;
     private String diagnostico;
-    public Consulta(Medico medico, Paciente paciente, LocalDateTime dataConsulta,  String diagnostico) {
+    private int idConsulta;
+    public Consulta(Medico medico, Paciente paciente, LocalDateTime dataConsulta, String diagnostico) {
         this.medico = medico;
         this.paciente = paciente;
         this.dataConsulta = dataConsulta;
         this.diagnostico =  diagnostico;
+    }
+
+    public int getIdConsulta() {
+        return idConsulta;
     }
 
     public Medico getMedico() {

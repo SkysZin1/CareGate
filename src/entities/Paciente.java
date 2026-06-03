@@ -56,8 +56,4 @@ public class Paciente {
         return consultas;
     }
 
-    @Override
-    public String toString() {
-        return nome + "," + endereco + "," + cpf + "," + telefone;
-    }
 }

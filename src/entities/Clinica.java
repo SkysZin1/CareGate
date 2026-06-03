@@ -43,6 +43,10 @@ public class Clinica {
         historicoConsulta.add(consulta);
     }
 
+    public void removeConsulta(int idConsulta){
+        historicoConsulta.removeIf(consulta -> consulta.getIdConsulta() == idConsulta);
+    }
+
     public Medico getMedicoByCRM(String crm){
         return mapaMedico.get(crm);
     }
