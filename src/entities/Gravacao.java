@@ -266,4 +266,13 @@ public class Gravacao {
             System.out.println("Erro ao atualizar o arquivo após remoção: " + e.getMessage());
         }
     }
+    public void salvarNovaConsulta(Consulta consulta) {
+        File arquivoConsultas = new File(dataDir, "consultas.txt");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivoConsultas, true))) {
+            bw.write(consulta.toString());
+            bw.newLine();
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar consulta no arquivo: " + e.getMessage());
+        }
+    }
 }
