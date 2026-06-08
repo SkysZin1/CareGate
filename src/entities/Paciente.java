@@ -48,6 +48,11 @@ public class Paciente {
         this.telefone = telefone;
     }
 
+    @Override
+    public String toString() {
+        return nome + "|" + endereco + "|" + cpf + "|" + telefone;
+    }
+
     public void addConsulta(Consulta consulta){
         this.consultas.add(consulta);
     }

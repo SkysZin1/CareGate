@@ -56,8 +56,8 @@ public class Clinica {
     }
 
     public Consulta agendarConsulta(String cpf, String crm, String data) {
-        Medico medico = getMedicoByCRM(crm);
-        Paciente paciente = getPacienteByCPF(cpf);
+        Medico medico = getMedicoByCRM(crm.trim());
+        Paciente paciente = getPacienteByCPF(cpf.trim());
         if (medico == null || paciente == null) {
             return null;
         }
@@ -96,8 +96,10 @@ public class Clinica {
     public void getHistoricoConsulta() {
         System.out.printf("%-15s %-15s %-15s %-15s%n", "Médico", "Paciente", "Data", "Diagnostico");
         System.out.println("--------------------------------------------------------------------------------");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         for (Consulta consulta : historicoConsulta){
-            System.out.printf("%-15s %-15s %-15s %-15s%n", consulta.getMedico().getNome(), consulta.getPaciente().getNome(), consulta.getDataConsulta(), consulta.getDiagnostico());
+            String dataFormatada = consulta.getDataConsulta().format(formatter);
+            System.out.printf("%-15s %-15s %-15s %-15s%n", consulta.getMedico().getNome(), consulta.getPaciente().getNome(), dataFormatada, consulta.getDiagnostico());
         }
     }
 

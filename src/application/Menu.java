@@ -99,7 +99,7 @@ public class Menu {
         String cpf = null;
         do{  // usa um padrão esperado para verificar se o cpf é válido
             System.out.println("Digite um CPF válido (Sem . )");
-            cpf = sc.nextLine();
+            cpf = sc.nextLine().trim();
         }while(!Pattern.matches(regex, cpf));
 
         System.out.println("Digite o telefone do Paciente");
@@ -133,7 +133,7 @@ public class Menu {
         String crm = null;
         do{ // usa um padrão esperado para verificar se o crm é valido
             System.out.println("Digite um CRM válido");
-            crm = sc.nextLine();
+            crm = sc.nextLine().trim();
         }while(!Pattern.matches(regex, crm));
 
         System.out.println("Digite a especialidade do Medico");
@@ -218,17 +218,42 @@ public class Menu {
     public void agendarConsulta(Clinica clinica, Scanner sc, Gravacao gravacao){
         limparConsole();
         System.out.println("Digite o CPF do Paciente");
-        String cpf = sc.nextLine();
+        String cpf = sc.nextLine().trim();
+        
+        // Validar CPF com regex
+        String regexCpf = "\\d{11}";
+        if (!Pattern.matches(regexCpf, cpf)) {
+            System.out.println("CPF inválido! Digite um CPF com 11 dígitos (sem pontos).");
+            esperar(2000);
+            return;
+        }
+        
         System.out.println("Digite o CRM do Medico");
-        String crm = sc.nextLine();
+        String crm = sc.nextLine().trim();
+        
+        // Validar CRM com regex
+        String regexCrm = "CRM/[A-Z]{2}\\s\\d{4,6}";
+        if (!Pattern.matches(regexCrm, crm)) {
+            System.out.println("CRM inválido! Formato esperado: CRM/XX XXXXXX");
+            esperar(2000);
+            return;
+        }
+        
         Medico medico = clinica.getMedicoByCRM(crm);
         if (medico == null) {
             System.out.println("Médico não encontrado!");
             esperar(2000);
             return;
         }
+        // Verifica se o paciente existe antes de tentar agendar
+        Paciente paciente = clinica.getPacienteByCPF(cpf);
+        if (paciente == null) {
+            System.out.println("Paciente não encontrado!");
+            esperar(2000);
+            return;
+        }
         System.out.println("Digite a data da consulta (dd/MM/yyyy)");
-        String data = sc.nextLine();
+        String data = sc.nextLine().trim();
 
         Consulta consulta = clinica.agendarConsulta(cpf, crm, data);
         if (consulta == null) {
