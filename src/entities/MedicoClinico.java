@@ -21,8 +21,8 @@ public class MedicoClinico extends Medico implements Agendavel, Prescritor {
 
     @Override
     public String paraTexto() {
-        // Guarda o identificador "Cirurgiao" no início da linha para sabermos restaurar depois
-        return "Cirurgiao," + getNome() + "," + getCRM() + "," + getEspecialidade() + "," + getIdade() + "," + getValorConsultaBase();
+        // Guarda o identificador "Clinico" no início da linha para sabermos restaurar depois
+        return "Clinico," + getNome() + "," + getCRM() + "," + getEspecialidade() + "," + getIdade() + "," + getValorConsultaBase();
     }
 
     @Override
