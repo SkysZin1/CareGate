@@ -126,7 +126,7 @@ public class Gravacao {
     // Salva paciente no final do arquivo
     public void salvarNovoPaciente(Paciente paciente) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivoPacientes, true))) {
-            bw.write(paciente.toString());
+            bw.write(paciente.getNome() + "|" + paciente.getEndereco() + "|" + paciente.getCpf() + "|" + paciente.getTelefone());
             bw.newLine();
         } catch (IOException e) {
             System.out.println("Erro ao salvar paciente no arquivo: " + e.getMessage());
@@ -153,17 +153,34 @@ public class Gravacao {
 
     // Função para remontar o objeto Paciente a partir do texto
     private Paciente converterLinhaParaPaciente(String linha) {
-        String[] dados = linha.split(",");
+        if (linha.contains("|")) {
+            String[] dados = linha.split("\\|");
+            if (dados.length < 4) {
+                return null;
+            }
+            String nome = dados[0].trim();
+            String endereco = dados[1].trim();
+            String cpf = dados[2].trim();
+            String telefone = dados[3].trim();
+            return new Paciente(nome, endereco, cpf, telefone);
+        }
 
-        // Verifica se a linha tem os dados necessários para evitar ArrayIndexOutOfBoundsException
+        String[] dados = linha.split(",");
         if (dados.length < 4) {
             return null;
         }
 
-        String nome = dados[0];
-        String endereco = dados[1];
-        String cpf = dados[2];
-        String telefone = dados[3];
+        String nome = dados[0].trim();
+        String telefone = dados[dados.length - 1].trim();
+        String cpf = dados[dados.length - 2].trim();
+        StringBuilder enderecoBuilder = new StringBuilder();
+        for (int i = 1; i < dados.length - 2; i++) {
+            if (enderecoBuilder.length() > 0) {
+                enderecoBuilder.append(",");
+            }
+            enderecoBuilder.append(dados[i].trim());
+        }
+        String endereco = enderecoBuilder.toString();
 
         return new Paciente(nome, endereco, cpf, telefone);
     }
@@ -184,10 +201,15 @@ public class Gravacao {
                 if (linha.trim().isEmpty()) continue;
                 String[] dados = linha.split(",");
                 if (dados.length >= 4) {
-                    String cpfDaLinha = dados[2]; // O CPF está na posição 2 (índice 2)
+                    String cpfDaLinha;
+                    if (linha.contains("|")) {
+                        cpfDaLinha = linha.split("\\|")[2].trim();
+                    } else {
+                        cpfDaLinha = dados[dados.length - 2].trim();
+                    }
 
                     // Só adiciona na lista se o CPF for diferente do que queremos remover
-                    if (!cpfDaLinha.equalsIgnoreCase(cpfParaRemover)) {
+                    if (!cpfDaLinha.equalsIgnoreCase(cpfParaRemover.trim())) {
                         linhasQueFicam.add(linha);
                     }
                 }
@@ -211,12 +233,12 @@ public class Gravacao {
     // Função para remontar o objeto a partir do texto
     private Medico converterLinhaParaMedico(String linha) {
         String[] dados = linha.split(",");
-        String tipo = dados[0];
-        String nome = dados[1];
-        String crm = dados[2];
-        String espec = dados[3];
-        Integer idade = Integer.parseInt(dados[4]);
-        Integer valor = Integer.parseInt(dados[5]);
+        String tipo = dados[0].trim();
+        String nome = dados[1].trim();
+        String crm = dados[2].trim();
+        String espec = dados[3].trim();
+        Integer idade = Integer.parseInt(dados[4].trim());
+        Integer valor = Integer.parseInt(dados[5].trim());
 
         switch (tipo) {
             case "Clinico": return new MedicoClinico(nome, crm, espec, idade, valor);
@@ -242,10 +264,10 @@ public class Gravacao {
 
                 String[] dados = linha.split(",");
                 if (dados.length >= 3) {
-                    String crmDaLinha = dados[2];
+                    String crmDaLinha = dados[2].trim();
 
                     // Só adiciona na lista se o CRM for diferente do que queremos remover
-                    if (!crmDaLinha.equalsIgnoreCase(crmParaRemover)) {
+                    if (!crmDaLinha.equalsIgnoreCase(crmParaRemover.trim())) {
                         linhasQueFicam.add(linha);
                     }
                 }
@@ -263,6 +285,15 @@ public class Gravacao {
             }
         } catch (IOException e) {
             System.out.println("Erro ao atualizar o arquivo após remoção: " + e.getMessage());
+        }
+    }
+    public void salvarNovaConsulta(Consulta consulta) {
+        File arquivoConsultas = new File(dataDir, "consultas.txt");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivoConsultas, true))) {
+            bw.write(consulta.toString());
+            bw.newLine();
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar consulta no arquivo: " + e.getMessage());
         }
     }
 }

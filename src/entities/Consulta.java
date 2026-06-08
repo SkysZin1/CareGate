@@ -1,6 +1,7 @@
 package entities;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Consulta {
     private Medico medico;
@@ -13,6 +14,15 @@ public class Consulta {
         this.paciente = paciente;
         this.dataConsulta = dataConsulta;
         this.diagnostico =  diagnostico;
+    }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dataFormatada = dataConsulta.format(formatter);
+        return "CPF: " + paciente.getCpf() + " | Paciente: " + paciente.getNome() +
+               " | Data: " + dataFormatada + " | Médico: " + medico.getNome() +
+               " | CRM: " + medico.getCRM();
     }
 
     public int getIdConsulta() {
