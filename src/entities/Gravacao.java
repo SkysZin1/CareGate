@@ -230,7 +230,7 @@ public class Gravacao {
         }
     }
 
-    // Função para remontar o objeto a partir do texto
+    // Função para remontar o médico a partir do texto
     private Medico converterLinhaParaMedico(String linha) {
         String[] dados = linha.split(",");
         String tipo = dados[0].trim();
