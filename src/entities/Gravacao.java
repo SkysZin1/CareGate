@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Gravacao {
 
@@ -16,6 +19,7 @@ public class Gravacao {
     private final File dataDir;
     private final File arquivoMedicos;
     private final File arquivoPacientes;
+    private final File arquivoConsultas;
 
     // Checa se o arquivo existe e se não está vazio
     public boolean arquivoTemDados() {
@@ -25,6 +29,11 @@ public class Gravacao {
     // Checa se o arquivo de pacientes existe e se não está vazio
     public boolean arquivoTemDadosPacientes() {
         return arquivoPacientes.exists() && arquivoPacientes.length() > 0;
+    }
+
+    // Checa se o arquivo de consultas existe e se não está vazio
+    public boolean arquivoTemDadosConsultas() {
+        return arquivoConsultas.exists() && arquivoConsultas.length() > 0;
     }
 
     // das classes (por exemplo build/). Tentamos determinar o root do projeto
@@ -72,6 +81,7 @@ public class Gravacao {
         if (!this.dataDir.exists()) this.dataDir.mkdirs();
         this.arquivoMedicos = new File(this.dataDir, "medicos.txt");
         this.arquivoPacientes = new File(this.dataDir, "pacientes.txt");
+        this.arquivoConsultas = new File(this.dataDir, "consultas.txt");
 
         // Migração: procura por arquivos medicos/pacientes em locais comuns e
         // move (ou copia) para data/ para unificar a base de dados.
@@ -288,13 +298,155 @@ public class Gravacao {
             System.out.println("Erro ao atualizar o arquivo após remoção: " + e.getMessage());
         }
     }
+    // Salva consulta no arquivo com formato estruturado (vírgula separada)
     public void salvarNovaConsulta(Consulta consulta) {
-        File arquivoConsultas = new File(dataDir, "consultas.txt");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivoConsultas, true))) {
-            bw.write(consulta.toString());
+            // Formato: id,CPF,CRM,data(dd/MM/yyyy),diagnostico
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String dataFormatada = consulta.getDataConsulta().format(formatter);
+            String linha = consulta.getIdConsulta() + "," +
+                          consulta.getPaciente().getCpf() + "," +
+                          consulta.getMedico().getCRM() + "," +
+                          dataFormatada + "," +
+                          consulta.getDiagnostico();
+            bw.write(linha);
             bw.newLine();
         } catch (IOException e) {
             System.out.println("Erro ao salvar consulta no arquivo: " + e.getMessage());
         }
+    }
+
+    // Lê o arquivo e preenche a memória da Clínica com consultas
+    public void carregarConsultas(Clinica c) {
+        if (!arquivoConsultas.exists()) return;
+        try (BufferedReader br = new BufferedReader(new FileReader(arquivoConsultas))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                if (linha.trim().isEmpty()) continue;
+
+                Consulta consulta = converterLinhaParaConsulta(c, linha);
+                if (consulta != null) {
+                    c.addConsulta(consulta);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao ler dados de consultas: " + e.getMessage());
+        }
+    }
+
+    // Função para remontar o objeto Consulta a partir do texto
+    private Consulta converterLinhaParaConsulta(Clinica c, String linha) {
+        if (!linha.contains(",")) {
+            return null;
+        }
+
+        String[] dados = linha.split(",");
+        if (dados.length < 4) {
+            return null;
+        }
+
+        try {
+            int id = Integer.parseInt(dados[0].trim());
+            String cpf = dados[1].trim();
+            String crm = dados[2].trim();
+            String dataStr = dados[3].trim();
+            String diagnostico = dados.length > 4 ? dados[4].trim() : "";
+
+            // Busca os objetos pela Clínica
+            Paciente paciente = c.getPacienteByCPF(cpf);
+            Medico medico = c.getMedicoByCRM(crm);
+
+            if (paciente == null || medico == null) {
+                return null;
+            }
+
+            // Converte a data
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            try {
+                LocalDate localDate = LocalDate.parse(dataStr, formatter);
+                LocalDateTime dataConsulta = localDate.atStartOfDay();
+
+                Consulta consulta = new Consulta(medico, paciente, dataConsulta, diagnostico, id);
+                return consulta;
+            } catch (Exception e) {
+                System.out.println("Erro ao converter data da consulta: " + e.getMessage());
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Erro ao converter ID da consulta: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // Remove consulta do arquivo baseado no CPF e CRM (identificadores únicos)
+    public void removerConsultaDoArquivo(String cpfPaciente, String crmMedico) {
+        if (!arquivoConsultas.exists()) {
+            return;
+        }
+
+        List<String> linhasQueFicam = new ArrayList<>();
+
+        // Ler tudo e guardar apenas as consultas que não correspondem aos critérios
+        try (BufferedReader br = new BufferedReader(new FileReader(arquivoConsultas))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                if (linha.trim().isEmpty()) continue;
+
+                String[] dados = linha.split(",");
+                if (dados.length >= 3) {
+                    String cpfDaLinha = dados[1].trim();
+                    String crmDaLinha = dados[2].trim();
+
+                    // Só adiciona na lista se NÃO for a consulta que queremos remover
+                    if (!cpfDaLinha.equals(cpfPaciente.trim()) || !crmDaLinha.equals(crmMedico.trim())) {
+                        linhasQueFicam.add(linha);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao ler o arquivo para remoção de consulta: " + e.getMessage());
+            return;
+        }
+
+        // Reescreve o arquivo com as consultas que ficaram
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivoConsultas, false))) {
+            for (String linha : linhasQueFicam) {
+                bw.write(linha);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao atualizar o arquivo após remoção de consulta: " + e.getMessage());
+        }
+    }
+
+    // Retorna o ID da última consulta existente no arquivo
+    public int getIdUltimaConsulta() {
+        if (!arquivoConsultas.exists() || arquivoConsultas.length() == 0) {
+            return 0; // Se não há arquivo ou está vazio, retorna 0
+        }
+
+        int ultimoId = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(arquivoConsultas))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                if (linha.trim().isEmpty()) continue;
+
+                String[] dados = linha.split(",");
+                if (dados.length >= 1) {
+                    try {
+                        int id = Integer.parseInt(dados[0].trim());
+                        if (id > ultimoId) {
+                            ultimoId = id;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignora linhas com formato inválido
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao ler o arquivo de consultas: " + e.getMessage());
+        }
+
+        return ultimoId;
     }
 }

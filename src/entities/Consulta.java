@@ -9,24 +9,21 @@ public class Consulta {
     private LocalDateTime dataConsulta;
     private String diagnostico;
     private int idConsulta;
-    public Consulta(Medico medico, Paciente paciente, LocalDateTime dataConsulta, String diagnostico) {
+    public Consulta(Medico medico, Paciente paciente, LocalDateTime dataConsulta, String diagnostico,  int idConsulta) {
         this.medico = medico;
         this.paciente = paciente;
         this.dataConsulta = dataConsulta;
         this.diagnostico =  diagnostico;
+        this.idConsulta = idConsulta;
     }
 
-    @Override
-    public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String dataFormatada = dataConsulta.format(formatter);
-        return "CPF: " + paciente.getCpf() + " | Paciente: " + paciente.getNome() +
-               " | Data: " + dataFormatada + " | Médico: " + medico.getNome() +
-               " | CRM: " + medico.getCRM();
-    }
 
     public int getIdConsulta() {
         return idConsulta;
+    }
+
+    public void setIdConsulta(int idConsulta) {
+        this.idConsulta = idConsulta;
     }
 
     public Medico getMedico() {

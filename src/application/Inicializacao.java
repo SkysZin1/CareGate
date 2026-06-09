@@ -1,6 +1,7 @@
 package application;
 
 import entities.*;
+import java.time.LocalDateTime;
 
 public class Inicializacao {
 
@@ -51,6 +52,45 @@ public class Inicializacao {
         adicionarESalvarPaciente(c, g, new Paciente("João Ferreira", "Loteamento Verde, 10", "02345678901", "71999990010"));
     }
 
+    public static void inicializarConsultasPadrao(Clinica c, Gravacao g) {
+
+        // Obtém pacientes e médicos do sistema
+        Paciente paciente1 = c.getPacienteByCPF("12345678901");
+        Medico medico1 = c.getMedicoByCRM("CRM/BA 123456");
+
+        Paciente paciente2 = c.getPacienteByCPF("22345678901");
+        Medico medico2 = c.getMedicoByCRM("CRM/BA 133456");
+
+        Paciente paciente3 = c.getPacienteByCPF("32345678901");
+        Medico medico3 = c.getMedicoByCRM("CRM/BA 124456");
+
+        Paciente paciente4 = c.getPacienteByCPF("42345678901");
+        Medico medico4 = c.getMedicoByCRM("CRM/BA 223456");
+
+        Paciente paciente5 = c.getPacienteByCPF("52345678901");
+        Medico medico5 = c.getMedicoByCRM("CRM/BA 143456");
+
+        if (paciente1 != null && medico1 != null) {
+            adicionarESalvarConsulta(c, g, new Consulta(medico1, paciente1, LocalDateTime.of(2026, 7, 5, 10, 0), "Consulta de rotina", 1));
+        }
+
+        if (paciente2 != null && medico2 != null) {
+            adicionarESalvarConsulta(c, g, new Consulta(medico2, paciente2, LocalDateTime.of(2026, 7, 7, 14, 30), "Avaliação pré-cirúrgica", 2));
+        }
+
+        if (paciente3 != null && medico3 != null) {
+            adicionarESalvarConsulta(c, g, new Consulta(medico3, paciente3, LocalDateTime.of(2026, 7, 10, 9, 0), "Limpeza dental", 3));
+        }
+
+        if (paciente4 != null && medico4 != null) {
+            adicionarESalvarConsulta(c, g, new Consulta(medico4, paciente4, LocalDateTime.of(2026, 7, 12, 15, 0), "Avaliação endócrina", 4));
+        }
+
+        if (paciente5 != null && medico5 != null) {
+            adicionarESalvarConsulta(c, g, new Consulta(medico5, paciente5, LocalDateTime.of(2026, 7, 15, 11, 30), "Avaliação neurológica", 5));
+        }
+    }
+
     // Métod0 para garantir que o paciente vá tanto para a lista na memória quanto para o arquivo TXT
     private static void adicionarESalvarPaciente(Clinica c, Gravacao g, Paciente p) {
         c.addPaciente(p);
@@ -63,6 +103,13 @@ public class Inicializacao {
         g.salvarNovoMedico(m);
     }
 
+    // Métod0 para garantir que a consulta vá tanto para a lista na memória quanto para o arquivo TXT
+    private static void adicionarESalvarConsulta(Clinica c, Gravacao g, Consulta consulta) {
+        c.addConsulta(consulta);
+        g.salvarNovaConsulta(consulta);
+    }
+
+    // Verifica se os arquivos ja possuem dados, se não, inicializa os dados padrão
     public static void Inicializar(Clinica c, Gravacao g) {
         if (g.arquivoTemDados()) {
             g.carregarMedicos(c);
@@ -75,6 +122,13 @@ public class Inicializacao {
             g.carregarPacientes(c);
         } else {
             inicializarPacientesPadrao(c, g);
+        }
+
+        // Consultas: carregar se existir arquivo, senão inicializar com consultas padrão
+        if (g.arquivoTemDadosConsultas()) {
+            g.carregarConsultas(c);
+        } else {
+            inicializarConsultasPadrao(c, g);
         }
     }
 }
