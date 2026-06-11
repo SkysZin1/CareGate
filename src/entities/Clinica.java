@@ -15,6 +15,7 @@ public class Clinica {
 
     HashMap<String, Medico> mapaMedico = new HashMap<>();
     HashMap<String, Paciente> mapaPaciente = new HashMap<>();
+    HashMap<Integer, Consulta> mapaConsulta = new HashMap<>();
 
     public Clinica(){
     }
@@ -41,10 +42,12 @@ public class Clinica {
 
     public void addConsulta(Consulta consulta){
         historicoConsulta.add(consulta);
+        mapaConsulta.put(consulta.getIdConsulta(), consulta);
     }
 
     public void removeConsulta(int idConsulta){
         historicoConsulta.removeIf(consulta -> consulta.getIdConsulta() == idConsulta);
+        mapaConsulta.remove(idConsulta);
     }
 
     public Medico getMedicoByCRM(String crm){
@@ -53,6 +56,10 @@ public class Clinica {
 
     public Paciente getPacienteByCPF(String cpf){
         return mapaPaciente.get(cpf);
+    }
+
+    public Consulta getConsultaByIdConsulta(int idConsulta){
+        return mapaConsulta.get(idConsulta);
     }
 
     public Consulta agendarConsulta(String cpf, String crm, String data, int idConsulta) {
