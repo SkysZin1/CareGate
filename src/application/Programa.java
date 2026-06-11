@@ -26,20 +26,12 @@ public class Programa {
                     Menu.exibirMenuPacientes(c, g, sc, menu);
                     break;
                 case 3:
-                    menu.agendarConsulta(c, sc, g);
-                    break;
-                case 5:
-                    c.getHistoricoConsulta();
-                    while(true){
-                        System.out.println("Digite 0 para voltar");
-                        if(sc.nextInt() == 0){
-                            break;
-                        }
-                    }
+                    Menu.exibirMenuConsultas(c, g, sc, menu);
                     break;
                 default:
                     if (opcao != 0) {
                         System.out.println("Opção inválida. Tente novamente.");
+                        Menu.esperar(1000);
                     }
                     break;
             }

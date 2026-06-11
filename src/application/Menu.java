@@ -15,10 +15,8 @@ public class Menu {
             System.out.println("╚════════════════════════════════════════╝");
             System.out.println("\n[1] Gerenciar Médicos");
             System.out.println("[2] Gerenciar Pacientes");
-            System.out.println("[3] Agendar Consulta");
-            System.out.println("[4] Realizar Consulta");
-            System.out.println("[5] Listar Histórico de Consultas");
-            System.out.println("[6] Gerar Relatório Financeiro");
+            System.out.println("[3] Gerenciar Consultas");
+            System.out.println("[4] Gerar Relatório Financeiro");
             System.out.println("[0] Sair\n");
     }
 
@@ -89,8 +87,43 @@ public class Menu {
                     break;
             }
         }
+    }
+
+    public static void exibirMenuConsultas(Clinica c, Gravacao g, Scanner sc, Menu menu) {
+        int opcao = -1;
+        while (opcao != 0) {
+            limparConsole();
+            System.out.println("\n╔════════════════════════════════════════╗");
+            System.out.println("║         GERENCIAR CONSULTAS            ║");
+            System.out.println("╚════════════════════════════════════════╝");
+            System.out.println("\n[1] Agendar Consulta");
+            System.out.println("[2] Cancelar Consulta");
+            System.out.println("[3] Listar Consultas");
+            System.out.println("[0] Voltar\n");
+            opcao = sc.nextInt();
+            sc.nextLine(); // limpa o \n pendente
+            switch(opcao){
+                case 1:
+                    menu.agendarConsulta(c, sc, g);
+                    break;
+                case 2:
+                    menu.removerConsulta(c, sc, g);
+                    break;
+                case 3:
+                    limparConsole();
+                    c.getHistoricoConsulta();
+                    while(true){
+                        System.out.println("Digite 0 para voltar");
+                        if(sc.nextInt() == 0){
+                            break;
+                        }
+                    }
+                    break;
+            }
+        }
 
     }
+
     public void cadastrarPaciente(Clinica clinica, Gravacao gravacao){
         limparConsole();
         System.out.println("Digite o nome do Paciente");
@@ -195,32 +228,11 @@ public class Menu {
 
     }
 
-    public static void limparConsole() {
-        try {
-            new ProcessBuilder("cmd", "/c", "cls")
-                    .inheritIO()
-                    .start()
-                    .waitFor();
-        } catch (Exception e) {
-            for (int i = 0; i < 50; i++) {
-                System.out.println();
-            }
-        }
-    }
-
-    public static void esperar(int milissegundos) {
-        try {
-            Thread.sleep(milissegundos);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
     public void agendarConsulta(Clinica clinica, Scanner sc, Gravacao gravacao){
         limparConsole();
         System.out.println("Digite o CPF do Paciente");
         String cpf = sc.nextLine().trim();
-        
+
         // Validar CPF com regex
         String regexCpf = "\\d{11}";
         if (!Pattern.matches(regexCpf, cpf)) {
@@ -228,10 +240,10 @@ public class Menu {
             esperar(2000);
             return;
         }
-        
+
         System.out.println("Digite o CRM do Medico");
         String crm = sc.nextLine().trim();
-        
+
         // Validar CRM com regex
         String regexCrm = "CRM/[A-Z]{2}\\s\\d{4,6}";
         if (!Pattern.matches(regexCrm, crm)) {
@@ -239,7 +251,7 @@ public class Menu {
             esperar(2000);
             return;
         }
-        
+
         Medico medico = clinica.getMedicoByCRM(crm);
         if (medico == null) {
             System.out.println("Médico não encontrado!");
@@ -266,8 +278,44 @@ public class Menu {
 
         gravacao.salvarNovaConsulta(consulta);
         System.out.println("Consulta agendada com sucesso!");
-        esperar(2000); // Tempo para o usuario ver a mensagem de sucesso    
+        esperar(2000); // Tempo para o usuario ver a mensagem de sucesso
     }
+
+    public void removerConsulta(Clinica clinica, Scanner sc, Gravacao gravacao){
+        limparConsole();
+        System.out.println("Digite o ID da Consulta");
+        int idConsulta = sc.nextInt();
+        clinica.removeConsulta(idConsulta);
+        gravacao.removerConsultaDoArquivo(idConsulta);
+        System.out.println("Consulta cancelada com sucesso!");
+        esperar(2000); // Tempo para o usuario ver a mensagem de sucesso
+    }
+
+
+
+
+    public static void limparConsole() {
+        try {
+            new ProcessBuilder("cmd", "/c", "cls")
+                    .inheritIO()
+                    .start()
+                    .waitFor();
+        } catch (Exception e) {
+            for (int i = 0; i < 50; i++) {
+                System.out.println();
+            }
+        }
+    }
+
+    public static void esperar(int milissegundos) {
+        try {
+            Thread.sleep(milissegundos);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+
 
 
 
