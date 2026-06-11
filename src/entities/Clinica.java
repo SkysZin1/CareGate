@@ -1,5 +1,9 @@
 package entities;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -39,12 +43,37 @@ public class Clinica {
         historicoConsulta.add(consulta);
     }
 
+    public void removeConsulta(int idConsulta){
+        historicoConsulta.removeIf(consulta -> consulta.getIdConsulta() == idConsulta);
+    }
+
     public Medico getMedicoByCRM(String crm){
         return mapaMedico.get(crm);
     }
 
     public Paciente getPacienteByCPF(String cpf){
         return mapaPaciente.get(cpf);
+    }
+
+    public Consulta agendarConsulta(String cpf, String crm, String data, int idConsulta) {
+        Medico medico = getMedicoByCRM(crm.trim());
+        Paciente paciente = getPacienteByCPF(cpf.trim());
+        if (medico == null || paciente == null) {
+            return null;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDateTime dataConsulta;
+        try {
+            LocalDate localDate = LocalDate.parse(data, formatter);
+            dataConsulta = localDate.atStartOfDay();
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+
+        Consulta consulta = new Consulta(medico, paciente, dataConsulta, "", idConsulta);
+        addConsulta(consulta);
+        return consulta;
     }
 
     public void getMedicos() {
@@ -65,10 +94,12 @@ public class Clinica {
     }
 
     public void getHistoricoConsulta() {
-        System.out.printf("%-15s %-15s %-15s %-15s%n", "Médico", "Paciente", "Data", "Diagnostico");
+        System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", "id", "Médico", "Paciente", "Data", "Diagnostico");
         System.out.println("--------------------------------------------------------------------------------");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         for (Consulta consulta : historicoConsulta){
-            System.out.printf("%-15s %-15s %-15s %-15s%n", consulta.getMedico().getNome(), consulta.getPaciente().getNome(), consulta.getDataConsulta(), consulta.getDiagnostico());
+            String dataFormatada = consulta.getDataConsulta().format(formatter);
+            System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", consulta.getIdConsulta(), consulta.getMedico().getNome(), consulta.getPaciente().getNome(), dataFormatada, consulta.getDiagnostico());
         }
     }
 

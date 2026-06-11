@@ -1,17 +1,29 @@
 package entities;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Consulta {
     private Medico medico;
     private Paciente paciente;
     private LocalDateTime dataConsulta;
     private String diagnostico;
-    public Consulta(Medico medico, Paciente paciente, LocalDateTime dataConsulta,  String diagnostico) {
+    private int idConsulta;
+    public Consulta(Medico medico, Paciente paciente, LocalDateTime dataConsulta, String diagnostico,  int idConsulta) {
         this.medico = medico;
         this.paciente = paciente;
         this.dataConsulta = dataConsulta;
         this.diagnostico =  diagnostico;
+        this.idConsulta = idConsulta;
+    }
+
+
+    public int getIdConsulta() {
+        return idConsulta;
+    }
+
+    public void setIdConsulta(int idConsulta) {
+        this.idConsulta = idConsulta;
     }
 
     public Medico getMedico() {

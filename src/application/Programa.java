@@ -25,6 +25,9 @@ public class Programa {
                 case 2:
                     Menu.exibirMenuPacientes(c, g, sc, menu);
                     break;
+                case 3:
+                    menu.agendarConsulta(c, sc, g);
+                    break;
                 case 5:
                     c.getHistoricoConsulta();
                     while(true){
@@ -33,6 +36,12 @@ public class Programa {
                             break;
                         }
                     }
+                    break;
+                default:
+                    if (opcao != 0) {
+                        System.out.println("Opção inválida. Tente novamente.");
+                    }
+                    break;
             }
         }
     }

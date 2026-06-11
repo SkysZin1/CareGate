@@ -2,9 +2,13 @@
 
 package entities;
 
+import interfaces.Agendavel;
+import interfaces.Prescritor;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MedicoOdontologo extends Medico {
+public class MedicoOdontologo extends Medico implements Agendavel, Prescritor {
 
 
     public MedicoOdontologo(String nome, String CRM, String especialidade, Integer idade, Integer valorConsultaBase) {
@@ -88,5 +92,22 @@ public class MedicoOdontologo extends Medico {
     @Override
     public void setValorConsultaBase(Integer valorConsultaBase) {
         super.setValorConsultaBase(valorConsultaBase);
+    }
+
+    @Override
+    public List<String> obterHorariosDisponiveis() {
+        List<String> horarios = new ArrayList<>();
+        return horarios;
+    }
+
+    @Override
+    public Receita criarReceita(Consulta consulta) {
+        System.out.println("Criando receita médica padrão...");
+        return new Receita();
+    }
+
+    @Override
+    public boolean podePrescrever(Medicamento medicamento) {
+        return true;
     }
 }
