@@ -79,10 +79,20 @@ public class Menu {
                     Menu.limparConsole();
                     c.getPacientes();
                     while(true){
-                        System.out.println("Digite 0 para voltar");
-                        if(sc.nextInt() == 0){
-                            break;
+                         System.out.println("Digite 0 para voltar, ou digite um CPF especifico para ver as consultas do paciente");
+                         String aux = sc.nextLine().trim();
+                         if(aux.equals("0")) break;
+                         Paciente paciente = c.getPacienteByCPF(aux);
+                        if(paciente == null){
+                            System.out.println("Paciente não encontrado!");
+                            Menu.esperar(2000);
+                            continue;
                         }
+                        paciente.getHistoricoConsulta();
+                        do{
+                            System.out.println("Digite 0 para voltar");
+                        }while(sc.nextInt() != 0);
+                        sc.nextLine();
                     }
                     break;
             }
@@ -275,7 +285,7 @@ public class Menu {
             esperar(2000);
             return;
         }
-
+        paciente.addConsulta(consulta);
         gravacao.salvarNovaConsulta(consulta);
         System.out.println("Consulta agendada com sucesso!");
         esperar(2000); // Tempo para o usuario ver a mensagem de sucesso
@@ -285,6 +295,8 @@ public class Menu {
         limparConsole();
         System.out.println("Digite o ID da Consulta");
         int idConsulta = sc.nextInt();
+        Paciente paciente = clinica.getConsultaByIdConsulta(idConsulta).getPaciente();
+        paciente.removeConsulta(idConsulta);
         clinica.removeConsulta(idConsulta);
         gravacao.removerConsultaDoArquivo(idConsulta);
         System.out.println("Consulta cancelada com sucesso!");
