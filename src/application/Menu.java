@@ -215,6 +215,7 @@ public class Menu {
             Thread.currentThread().interrupt();
         }
     }
+
     public void agendarConsulta(Clinica clinica, Scanner sc, Gravacao gravacao){
         limparConsole();
         System.out.println("Digite o CPF do Paciente");
@@ -255,7 +256,8 @@ public class Menu {
         System.out.println("Digite a data da consulta (dd/MM/yyyy)");
         String data = sc.nextLine().trim();
 
-        Consulta consulta = clinica.agendarConsulta(cpf, crm, data);
+        int id = gravacao.getIdUltimaConsulta() + 1; // Gera um ID único para a nova consulta
+        Consulta consulta = clinica.agendarConsulta(cpf, crm, data, id);
         if (consulta == null) {
             System.out.println("Falha ao agendar a consulta. Verifique CPF, CRM e formato da data (dd/MM/yyyy).");
             esperar(2000);
