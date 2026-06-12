@@ -41,6 +41,8 @@ public class Clinica {
     }
 
     public void addConsulta(Consulta consulta){
+        Paciente p = consulta.getPaciente();
+        p.addConsulta(consulta);
         historicoConsulta.add(consulta);
         mapaConsulta.put(consulta.getIdConsulta(), consulta);
     }
@@ -99,6 +101,7 @@ public class Clinica {
         }
 
     }
+
 
     public void getHistoricoConsulta() {
         System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", "id", "Médico", "Paciente", "Data", "Diagnostico");
