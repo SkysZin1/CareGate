@@ -377,8 +377,8 @@ public class Gravacao {
         }
     }
 
-    // Remove consulta do arquivo baseado no CPF e CRM (identificadores únicos)
-    public void removerConsultaDoArquivo(String cpfPaciente, String crmMedico) {
+    // Remove consulta do arquivo baseado no ID
+    public void removerConsultaDoArquivo(int id) {
         if (!arquivoConsultas.exists()) {
             return;
         }
@@ -393,11 +393,10 @@ public class Gravacao {
 
                 String[] dados = linha.split(",");
                 if (dados.length >= 3) {
-                    String cpfDaLinha = dados[1].trim();
-                    String crmDaLinha = dados[2].trim();
+                    int idConsulta = Integer.parseInt(dados[0].trim());
 
                     // Só adiciona na lista se NÃO for a consulta que queremos remover
-                    if (!cpfDaLinha.equals(cpfPaciente.trim()) || !crmDaLinha.equals(crmMedico.trim())) {
+                    if (idConsulta != id) {
                         linhasQueFicam.add(linha);
                     }
                 }

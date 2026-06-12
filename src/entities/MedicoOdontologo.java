@@ -20,8 +20,8 @@ public class MedicoOdontologo extends Medico implements Agendavel, Prescritor {
 
     @Override
     public String paraTexto() {
-        // Guarda o identificador "Cirurgiao" no início da linha para sabermos restaurar depois
-        return "Cirurgiao," + getNome() + "," + getCRM() + "," + getEspecialidade() + "," + getIdade() + "," + getValorConsultaBase();
+        // Guarda o identificador "Odontologo" no início da linha para sabermos restaurar depois
+        return "Odontologo," + getNome() + "," + getCRM() + "," + getEspecialidade() + "," + getIdade() + "," + getValorConsultaBase();
     }
 
     @Override

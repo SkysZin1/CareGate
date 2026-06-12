@@ -1,6 +1,7 @@
 // feito por Davi - (25/05/26)
 // editado por miguel - (27/05/26)
 package entities;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +58,18 @@ public class Paciente {
         this.consultas.add(consulta);
     }
 
-    public List<Consulta> getConsultas() {
-        return consultas;
+    public void removeConsulta(int idConsulta) {
+        consultas.removeIf(consulta -> consulta.getIdConsulta() == idConsulta);
+    }
+
+    public void getHistoricoConsulta() {
+        System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", "id", "Médico", "Paciente", "Data", "Diagnostico");
+        System.out.println("--------------------------------------------------------------------------------");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        for (Consulta consulta : consultas){
+            String dataFormatada = consulta.getDataConsulta().format(formatter);
+            System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", consulta.getIdConsulta(), consulta.getMedico().getNome(), consulta.getPaciente().getNome(), dataFormatada, consulta.getDiagnostico());
+        }
     }
 
 }

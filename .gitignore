@@ -1,18 +1,19 @@
-# ignorar pasta out
-CareGate/out/
-out/
-
-# ignorar config pessoal
-.idea/discord.xml
+# Configuracoes de IDE
+.idea/
+*.iml
 
 # Arquivos compilados Java
 *.class
 *.jar
 
-# Pastas de compilação
+# Pastas de compilacao
 build/
-src/**/*.class
+out/
 
-# Arquivos temporários
+# Arquivos temporarios e backups
+*~
+*.tmp
+*.bak
+
+# Dados locais gerados pela aplicacao
 data/*
-
