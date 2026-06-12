@@ -285,7 +285,6 @@ public class Menu {
             esperar(2000);
             return;
         }
-        paciente.addConsulta(consulta);
         gravacao.salvarNovaConsulta(consulta);
         System.out.println("Consulta agendada com sucesso!");
         esperar(2000); // Tempo para o usuario ver a mensagem de sucesso
