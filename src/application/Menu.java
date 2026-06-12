@@ -295,9 +295,9 @@ public class Menu {
         limparConsole();
         System.out.println("Digite o ID da Consulta");
         int idConsulta = sc.nextInt();
-        clinica.removeConsulta(idConsulta);
         Paciente paciente = clinica.getConsultaByIdConsulta(idConsulta).getPaciente();
         paciente.removeConsulta(idConsulta);
+        clinica.removeConsulta(idConsulta);
         gravacao.removerConsultaDoArquivo(idConsulta);
         System.out.println("Consulta cancelada com sucesso!");
         esperar(2000); // Tempo para o usuario ver a mensagem de sucesso
