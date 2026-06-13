@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 public class Clinica {
@@ -62,6 +63,18 @@ public class Clinica {
 
     public Consulta getConsultaByIdConsulta(int idConsulta){
         return mapaConsulta.get(idConsulta);
+    }
+
+    public List<Medico> listarMedicos() {
+        return new ArrayList<>(medicos);
+    }
+
+    public List<Paciente> listarPacientes() {
+        return new ArrayList<>(pacientes);
+    }
+
+    public List<Consulta> listarConsultas() {
+        return new ArrayList<>(historicoConsulta);
     }
 
     public Consulta agendarConsulta(String cpf, String crm, String data, int idConsulta) {
