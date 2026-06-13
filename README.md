@@ -1,4 +1,4 @@
-# CareGate
+# CareGate 2.0
 
 Sistema de gestão de clínica desenvolvido em Java, com foco no cadastro e gerenciamento de médicos, pacientes e consultas.
 

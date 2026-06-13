@@ -21,7 +21,7 @@ public class CareGateFrame extends JFrame {
     private ConsultasPanel consultasPanel;
 
     public CareGateFrame(Clinica clinica, Gravacao gravacao) {
-        super("CareGate - Sistema de Gestao de Clinica");
+        super("CareGate 2.0 - Sistema de Gestao de Clinica");
         this.clinica = clinica;
         this.gravacao = gravacao;
 
