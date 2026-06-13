@@ -62,10 +62,6 @@ public class Paciente {
         consultas.removeIf(consulta -> consulta.getIdConsulta() == idConsulta);
     }
 
-    public List<Consulta> listarConsultas() {
-        return new ArrayList<>(consultas);
-    }
-
     public void getHistoricoConsulta() {
         System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", "id", "Médico", "Paciente", "Data", "Diagnostico");
         System.out.println("--------------------------------------------------------------------------------");
