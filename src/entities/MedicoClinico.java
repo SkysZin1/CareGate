@@ -3,13 +3,14 @@
 package entities;
 
 import interfaces.Agendavel;
+import interfaces.Faturavel;
 import interfaces.Prescritor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MedicoClinico extends Medico implements Agendavel, Prescritor {
+public class MedicoClinico extends Medico implements Faturavel {
 
     public MedicoClinico(String nome, String CRM, String especialidade, Integer idade, Integer valorConsultaBase) {
         super(nome, CRM, especialidade, idade, valorConsultaBase);
@@ -21,23 +22,12 @@ public class MedicoClinico extends Medico implements Agendavel, Prescritor {
 
     @Override
     public String paraTexto() {
-        // Guarda o identificador "Clinico" no início da linha para sabermos restaurar depois
-        return "Clinico," + getNome() + "," + getCRM() + "," + getEspecialidade() + "," + getIdade() + "," + getValorConsultaBase();
+        return "Clinico, " + getNome() + ", " + getCRM() + ", " + getEspecialidade() + ", " + getIdade() + " anos, " + getValorConsultaBase() + " reais por consulta";
     }
 
     @Override
     public Integer calcularValorConsulta() {
         return 150;
-    }
-
-    @Override
-    public Integer obterTempoConsultaMin() {
-        return 30;
-    }
-
-    @Override
-    public Boolean podeAgendarConsulta(LocalDateTime Data) {
-        return null;
     }
 
     @Override
@@ -96,19 +86,12 @@ public class MedicoClinico extends Medico implements Agendavel, Prescritor {
     }
 
     @Override
-    public List<String> obterHorariosDisponiveis() {
-        List<String> horarios = new ArrayList<>();
-        return horarios;
+    public double getValorConsulta() {
+        return getValorConsultaBase();
     }
 
     @Override
-    public Receita criarReceita(Consulta consulta) {
-        System.out.println("Criando receita médica padrão...");
-        return new Receita();
-    }
-
-    @Override
-    public boolean podePrescrever(Medicamento medicamento) {
-        return true;
+    public String getTipoMedico() {
+        return "Clínico";
     }
 }
