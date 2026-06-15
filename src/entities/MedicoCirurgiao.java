@@ -2,9 +2,11 @@
 
 package entities;
 
+import interfaces.Faturavel;
+
 import java.time.LocalDateTime;
 
-public class MedicoCirurgiao extends Medico {
+public class MedicoCirurgiao extends Medico implements Faturavel {
 
     public MedicoCirurgiao(String nome, String CRM, String especialidade, Integer idade, Integer valorConsultaBase) {
         super(nome, CRM, especialidade, idade, valorConsultaBase);
@@ -15,23 +17,12 @@ public class MedicoCirurgiao extends Medico {
 
     @Override
     public String paraTexto() {
-        // Guarda o identificador "Cirurgiao" no início da linha para sabermos restaurar depois
-        return "Cirurgiao," + getNome() + "," + getCRM() + "," + getEspecialidade() + "," + getIdade() + "," + getValorConsultaBase();
+        return "Cirurgiao, " + getNome() + ", " + getCRM() + ", " + getEspecialidade() + ", " + getIdade() + " anos, " + getValorConsultaBase() + " reais por consulta";
     }
 
     @Override
     public Integer calcularValorConsulta() {
         return 350;
-    }
-
-    @Override
-    public Integer obterTempoConsultaMin() {
-        return 45;
-    }
-
-    @Override
-    public Boolean podeAgendarConsulta(LocalDateTime Data) {
-        return null;
     }
 
     @Override
@@ -87,5 +78,15 @@ public class MedicoCirurgiao extends Medico {
     @Override
     public void setValorConsultaBase(Integer valorConsultaBase) {
         super.setValorConsultaBase(valorConsultaBase);
+    }
+
+    @Override
+    public double getValorConsulta() {
+        return getValorConsultaBase();
+    }
+
+    @Override
+    public String getTipoMedico() {
+        return "Cirurgião";
     }
 }

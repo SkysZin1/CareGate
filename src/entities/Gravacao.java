@@ -107,7 +107,7 @@ public class Gravacao {
     // Salva médico no final do arquivo
     public void salvarNovoMedico(Medico medico) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivoMedicos, true))) {
-            bw.write(medico.paraTexto()); // Certifique-se de que a classe Medico tem este método
+            bw.write(medico.paraTexto());
             bw.newLine();
         } catch (IOException e) {
             System.out.println("Erro ao salvar no arquivo: " + e.getMessage());
@@ -209,7 +209,6 @@ public class Gravacao {
             String linha;
             while ((linha = br.readLine()) != null) {
                 if (linha.trim().isEmpty()) continue;
-
                 String[] dados = linha.split(",");
                 if (dados.length >= 4) {
                     String cpfDaLinha;
@@ -241,7 +240,7 @@ public class Gravacao {
         }
     }
 
-    // Função para remontar o objeto a partir do texto
+    // Função para remontar o médico a partir do texto
     private Medico converterLinhaParaMedico(String linha) {
         String[] dados = linha.split(",");
         String tipo = dados[0].trim();

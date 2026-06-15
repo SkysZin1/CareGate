@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Clinica {
 
@@ -111,6 +112,10 @@ public class Clinica {
             String dataFormatada = consulta.getDataConsulta().format(formatter);
             System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", consulta.getIdConsulta(), consulta.getMedico().getNome(), consulta.getPaciente().getNome(), dataFormatada, consulta.getDiagnostico());
         }
+    }
+
+    public List<Consulta> getListaConsultas() {
+        return historicoConsulta;
     }
 
 }

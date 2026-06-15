@@ -3,12 +3,13 @@
 package entities;
 
 import interfaces.Agendavel;
+import interfaces.Faturavel;
 import interfaces.Prescritor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MedicoOdontologo extends Medico implements Agendavel, Prescritor {
+public class MedicoOdontologo extends Medico implements Faturavel {
 
 
     public MedicoOdontologo(String nome, String CRM, String especialidade, Integer idade, Integer valorConsultaBase) {
@@ -19,24 +20,23 @@ public class MedicoOdontologo extends Medico implements Agendavel, Prescritor {
     }
 
     @Override
+    public double getValorConsulta() {
+        return getValorConsultaBase();
+    }
+
+    @Override
+    public String getTipoMedico() {
+        return "Odontólogo";
+    }
+
+    @Override
     public String paraTexto() {
-        // Guarda o identificador "Odontologo" no início da linha para sabermos restaurar depois
-        return "Odontologo," + getNome() + "," + getCRM() + "," + getEspecialidade() + "," + getIdade() + "," + getValorConsultaBase();
+        return "Odontologo, " + getNome() + ", " + getCRM() + ", " + getEspecialidade() + ", " + getIdade() + " anos, " + getValorConsultaBase() + " reais por consulta";
     }
 
     @Override
     public Integer calcularValorConsulta() {
         return 180;
-    }
-
-    @Override
-    public Integer obterTempoConsultaMin() {
-        return 50;
-    }
-
-    @Override
-    public Boolean podeAgendarConsulta(LocalDateTime Data) {
-        return null;
     }
 
     @Override
@@ -94,20 +94,4 @@ public class MedicoOdontologo extends Medico implements Agendavel, Prescritor {
         super.setValorConsultaBase(valorConsultaBase);
     }
 
-    @Override
-    public List<String> obterHorariosDisponiveis() {
-        List<String> horarios = new ArrayList<>();
-        return horarios;
-    }
-
-    @Override
-    public Receita criarReceita(Consulta consulta) {
-        System.out.println("Criando receita médica padrão...");
-        return new Receita();
-    }
-
-    @Override
-    public boolean podePrescrever(Medicamento medicamento) {
-        return true;
-    }
 }

@@ -28,6 +28,9 @@ public class Programa {
                 case 3:
                     Menu.exibirMenuConsultas(c, g, sc, menu);
                     break;
+                case 4:
+                    menu.exibirFinancas(c);
+                    break;
                 default:
                     if (opcao != 0) {
                         System.out.println("Opção inválida. Tente novamente.");
