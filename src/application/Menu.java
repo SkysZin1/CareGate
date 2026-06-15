@@ -145,6 +145,12 @@ public class Menu {
             cpf = sc.nextLine().trim();
         }while(!Pattern.matches(regex, cpf));
 
+        if (clinica.getPacienteByCPF(cpf) != null) {
+            System.out.println("CPF ja cadastrado! Cadastro cancelado.");
+            esperar(2000);
+            return;
+        }
+
         System.out.println("Digite o telefone do Paciente");
         String telefone = sc.nextLine();
         System.out.println("Digite o endereco do Paciente");
@@ -178,6 +184,12 @@ public class Menu {
             System.out.println("Digite um CRM válido");
             crm = sc.nextLine().trim();
         }while(!Pattern.matches(regex, crm));
+
+        if (clinica.getMedicoByCRM(crm) != null) {
+            System.out.println("CRM ja cadastrado! Cadastro cancelado.");
+            esperar(2000);
+            return;
+        }
 
         System.out.println("Digite a especialidade do Medico");
         String especialidade = sc.nextLine();

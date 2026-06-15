@@ -1,6 +1,7 @@
 package application;
 
 import entities.*;
+import java.time.LocalDateTime;
 
 public class Inicializacao {
 
@@ -38,6 +39,62 @@ public class Inicializacao {
         adicionarESalvarMedico(c, g, new MedicoOdontologo("Luciano", "CRM/BA 120456", "Buco-Maxilo", 44, odontologoBase.calcularValorConsulta()));
     }
 
+    // Mét0do para garantir que a consulta vá para a lista em memória e seja persistida no arquivo
+    private static void adicionaESalvarConsulta(Clinica c, Gravacao g, Consulta consulta) {
+        // Se o ID não estiver definido (<= 0), pega o próximo ID disponível no arquivo
+        if (consulta.getIdConsulta() <= 0) {
+            int novoId = g.getIdUltimaConsulta() + 1;
+            consulta.setIdConsulta(novoId);
+        }
+
+        c.addConsulta(consulta);
+        g.salvarNovaConsulta(consulta);
+    }
+
+    // Inicializa consultas pre-definidas usando medicos e pacientes ja existentes
+    public static void inicializarConsultasPadrao(Clinica c, Gravacao g) {
+
+        try {
+            Paciente p1 = c.getPacienteByCPF("12345678901");
+            Paciente p2 = c.getPacienteByCPF("22345678901");
+            Paciente p3 = c.getPacienteByCPF("32345678901");
+            Paciente p4 = c.getPacienteByCPF("42345678901");
+            Paciente p5 = c.getPacienteByCPF("52345678901");
+            Paciente p6 = c.getPacienteByCPF("62345678901");
+            Paciente p7 = c.getPacienteByCPF("72345678901");
+            Paciente p8 = c.getPacienteByCPF("82345678901");
+            Paciente p9 = c.getPacienteByCPF("92345678901");
+            Paciente p10 = c.getPacienteByCPF("02345678901");
+
+            Medico m1 = c.getMedicoByCRM("CRM/BA 123456");
+            Medico m2 = c.getMedicoByCRM("CRM/BA 223456");
+            Medico m3 = c.getMedicoByCRM("CRM/BA 323456");
+            Medico m4 = c.getMedicoByCRM("CRM/BA 423456");
+            Medico m5 = c.getMedicoByCRM("CRM/BA 523456");
+            Medico m8 = c.getMedicoByCRM("CRM/BA 133456");
+            Medico m9 = c.getMedicoByCRM("CRM/BA 124456");
+            Medico m10 = c.getMedicoByCRM("CRM/BA 125456");
+
+            int anoAtual = LocalDateTime.now().getYear();
+
+            // Se algum for nulo, nao tenta criar a consulta correspondente
+            if (m1 != null && p1 != null) adicionaESalvarConsulta(c, g, new Consulta(m1, p1, LocalDateTime.of(anoAtual, 1, 10, 0, 0), "Dermatite", 0));
+            if (m2 != null && p2 != null) adicionaESalvarConsulta(c, g, new Consulta(m2, p2, LocalDateTime.of(anoAtual, 2, 12, 0, 0), "Avaliacao endocrinologica", 0));
+            if (m3 != null && p3 != null) adicionaESalvarConsulta(c, g, new Consulta(m3, p3, LocalDateTime.of(anoAtual, 3, 5, 0, 0), "Consulta ginecologica", 0));
+            if (m4 != null && p4 != null) adicionaESalvarConsulta(c, g, new Consulta(m4, p4, LocalDateTime.of(anoAtual, 4, 20, 0, 0), "Revisao oftalmologica", 0));
+            if (m5 != null && p5 != null) adicionaESalvarConsulta(c, g, new Consulta(m5, p5, LocalDateTime.of(anoAtual, 5, 14, 0, 0), "Avaliacao geriatrica", 0));
+            if (m1 != null && p6 != null) adicionaESalvarConsulta(c, g, new Consulta(m1, p6, LocalDateTime.of(anoAtual, 6, 25, 0, 0), "Dermatologia - retorno", 0));
+            if (m2 != null && p7 != null) adicionaESalvarConsulta(c, g, new Consulta(m2, p7, LocalDateTime.of(anoAtual, 7, 9, 0, 0), "Endocrinologia - acompanhamento", 0));
+            if (m8 != null && p8 != null) adicionaESalvarConsulta(c, g, new Consulta(m8, p8, LocalDateTime.of(anoAtual, 8, 22, 0, 0), "Cirurgia avaliativa", 0));
+            if (m9 != null && p9 != null) adicionaESalvarConsulta(c, g, new Consulta(m9, p9, LocalDateTime.of(anoAtual, 9, 2, 0, 0), "Ortodontia - primeira consulta", 0));
+            if (m10 != null && p10 != null) adicionaESalvarConsulta(c, g, new Consulta(m10, p10, LocalDateTime.of(anoAtual, 10, 30, 0, 0), "Implante - avaliacao", 0));
+            if (m5 != null && p3 != null) adicionaESalvarConsulta(c, g, new Consulta(m5, p3, LocalDateTime.of(anoAtual, 11, 18, 0, 0), "Geriatria - retorno", 0));
+            if (m8 != null && p4 != null) adicionaESalvarConsulta(c, g, new Consulta(m8, p4, LocalDateTime.of(anoAtual, 12, 5, 0, 0), "Revisao cirurgica", 0));
+
+        } catch (Exception e) {
+            System.out.println("Erro ao inicializar consultas padrão: " + e.getMessage());
+        }
+    }
     public static void inicializarPacientesPadrao(Clinica c, Gravacao g) {
         adicionarESalvarPaciente(c, g, new Paciente("Ana Silva", "Rua das Flores 123", "12345678901", "71999990001"));
         adicionarESalvarPaciente(c, g, new Paciente("Bruno Costa", "Av. Brasil 45", "22345678901", "71999990002"));
@@ -75,6 +132,13 @@ public class Inicializacao {
             g.carregarPacientes(c);
         } else {
             inicializarPacientesPadrao(c, g);
+        }
+
+        // Consultas: carregar se existir arquivo, senão inicializar com consultas padrão
+        if (g.arquivoTemDadosConsultas()) {
+            g.carregarConsultas(c);
+        } else {
+            inicializarConsultasPadrao(c, g);
         }
     }
 }

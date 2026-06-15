@@ -2,9 +2,7 @@
 // editado por Miguel - (27/05/26)
 package entities;
 
-import interfaces.Agendavel;
 import interfaces.Faturavel;
-import interfaces.Prescritor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
