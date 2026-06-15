@@ -2,9 +2,11 @@
 
 package entities;
 
+import interfaces.Faturavel;
+
 import java.time.LocalDateTime;
 
-public abstract class Medico {
+public abstract class Medico implements Faturavel {
 private String nome, CRM, especialidade;
 private Integer idade, valorConsultaBase;
 
@@ -25,10 +27,6 @@ private Integer idade, valorConsultaBase;
     }
 
     public abstract Integer calcularValorConsulta();
-
-    public abstract Integer obterTempoConsultaMin();
-
-    public abstract Boolean podeAgendarConsulta(LocalDateTime Data);
 
     public abstract String obterProtocoloAtendimento();
 

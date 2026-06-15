@@ -303,9 +303,24 @@ public class Menu {
         esperar(2000); // Tempo para o usuario ver a mensagem de sucesso
     }
 
+    public void exibirFinancas(Clinica clinica) {
+        limparConsole();
 
+        RelatorioFinanceiro relatorio = new RelatorioFinanceiro();
 
+        // Percorre todas as consultas já agendadas na clínica
+        for (Consulta consulta : clinica.getListaConsultas()) {
+            Medico medico = consulta.getMedico();
+            relatorio.registrarConsulta(medico, 1);
+        }
 
+        relatorio.gerarRelatorio();
+
+        while (true) {
+            System.out.println("\nDigite 0 para voltar");
+            if (sc.nextInt() == 0) break;
+        }
+    }
     public static void limparConsole() {
         try {
             new ProcessBuilder("cmd", "/c", "cls")
