@@ -78,18 +78,18 @@ public class Inicializacao {
             int anoAtual = LocalDateTime.now().getYear();
 
             // Se algum for nulo, nao tenta criar a consulta correspondente
-            if (m1 != null && p1 != null) adicionaESalvarConsulta(c, g, new Consulta(m1, p1, LocalDateTime.of(anoAtual, 1, 10, 0, 0), "Dermatite", 0));
-            if (m2 != null && p2 != null) adicionaESalvarConsulta(c, g, new Consulta(m2, p2, LocalDateTime.of(anoAtual, 2, 12, 0, 0), "Avaliacao endocrinologica", 0));
-            if (m3 != null && p3 != null) adicionaESalvarConsulta(c, g, new Consulta(m3, p3, LocalDateTime.of(anoAtual, 3, 5, 0, 0), "Consulta ginecologica", 0));
-            if (m4 != null && p4 != null) adicionaESalvarConsulta(c, g, new Consulta(m4, p4, LocalDateTime.of(anoAtual, 4, 20, 0, 0), "Revisao oftalmologica", 0));
-            if (m5 != null && p5 != null) adicionaESalvarConsulta(c, g, new Consulta(m5, p5, LocalDateTime.of(anoAtual, 5, 14, 0, 0), "Avaliacao geriatrica", 0));
-            if (m1 != null && p6 != null) adicionaESalvarConsulta(c, g, new Consulta(m1, p6, LocalDateTime.of(anoAtual, 6, 25, 0, 0), "Dermatologia - retorno", 0));
-            if (m2 != null && p7 != null) adicionaESalvarConsulta(c, g, new Consulta(m2, p7, LocalDateTime.of(anoAtual, 7, 9, 0, 0), "Endocrinologia - acompanhamento", 0));
-            if (m8 != null && p8 != null) adicionaESalvarConsulta(c, g, new Consulta(m8, p8, LocalDateTime.of(anoAtual, 8, 22, 0, 0), "Cirurgia avaliativa", 0));
-            if (m9 != null && p9 != null) adicionaESalvarConsulta(c, g, new Consulta(m9, p9, LocalDateTime.of(anoAtual, 9, 2, 0, 0), "Ortodontia - primeira consulta", 0));
-            if (m10 != null && p10 != null) adicionaESalvarConsulta(c, g, new Consulta(m10, p10, LocalDateTime.of(anoAtual, 10, 30, 0, 0), "Implante - avaliacao", 0));
-            if (m5 != null && p3 != null) adicionaESalvarConsulta(c, g, new Consulta(m5, p3, LocalDateTime.of(anoAtual, 11, 18, 0, 0), "Geriatria - retorno", 0));
-            if (m8 != null && p4 != null) adicionaESalvarConsulta(c, g, new Consulta(m8, p4, LocalDateTime.of(anoAtual, 12, 5, 0, 0), "Revisao cirurgica", 0));
+            if (m1 != null && p1 != null) adicionaESalvarConsulta(c, g, new Consulta(m1, p1, LocalDateTime.of(anoAtual, 1, 10, 8, 0), "Dermatite", 0));
+            if (m2 != null && p2 != null) adicionaESalvarConsulta(c, g, new Consulta(m2, p2, LocalDateTime.of(anoAtual, 2, 12, 9, 0), "Avaliacao endocrinologica", 0));
+            if (m3 != null && p3 != null) adicionaESalvarConsulta(c, g, new Consulta(m3, p3, LocalDateTime.of(anoAtual, 3, 5, 10, 0), "Consulta ginecologica", 0));
+            if (m4 != null && p4 != null) adicionaESalvarConsulta(c, g, new Consulta(m4, p4, LocalDateTime.of(anoAtual, 4, 20, 11, 0), "Revisao oftalmologica", 0));
+            if (m5 != null && p5 != null) adicionaESalvarConsulta(c, g, new Consulta(m5, p5, LocalDateTime.of(anoAtual, 5, 14, 8, 0), "Avaliacao geriatrica", 0));
+            if (m1 != null && p6 != null) adicionaESalvarConsulta(c, g, new Consulta(m1, p6, LocalDateTime.of(anoAtual, 6, 25, 9, 0), "Dermatologia - retorno", 0));
+            if (m2 != null && p7 != null) adicionaESalvarConsulta(c, g, new Consulta(m2, p7, LocalDateTime.of(anoAtual, 7, 9, 10, 0), "Endocrinologia - acompanhamento", 0));
+            if (m8 != null && p8 != null) adicionaESalvarConsulta(c, g, new Consulta(m8, p8, LocalDateTime.of(anoAtual, 8, 22, 13, 0), "Cirurgia avaliativa", 0));
+            if (m9 != null && p9 != null) adicionaESalvarConsulta(c, g, new Consulta(m9, p9, LocalDateTime.of(anoAtual, 9, 2, 17, 0), "Ortodontia - primeira consulta", 0));
+            if (m10 != null && p10 != null) adicionaESalvarConsulta(c, g, new Consulta(m10, p10, LocalDateTime.of(anoAtual, 10, 30, 18, 0), "Implante - avaliacao", 0));
+            if (m5 != null && p3 != null) adicionaESalvarConsulta(c, g, new Consulta(m5, p3, LocalDateTime.of(anoAtual, 11, 18, 11, 0), "Geriatria - retorno", 0));
+            if (m8 != null && p4 != null) adicionaESalvarConsulta(c, g, new Consulta(m8, p4, LocalDateTime.of(anoAtual, 12, 5, 14, 0), "Revisao cirurgica", 0));
 
         } catch (Exception e) {
             System.out.println("Erro ao inicializar consultas padrão: " + e.getMessage());

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.net.URISyntaxException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -116,7 +115,6 @@ public class Gravacao {
 
     // Lê o arquivo e preenche a memória da Clínica
     public void carregarMedicos(Clinica c) {
-        if (!arquivoMedicos.exists()) return;
         try (BufferedReader br = new BufferedReader(new FileReader(arquivoMedicos))) {
             String linha;
             while ((linha = br.readLine()) != null) {
@@ -145,7 +143,6 @@ public class Gravacao {
 
     // Lê o arquivo e preenche a memória da Clínica com pacientes
     public void carregarPacientes(Clinica c) {
-        if (!arquivoPacientes.exists()) return;
         try (BufferedReader br = new BufferedReader(new FileReader(arquivoPacientes))) {
             String linha;
             while ((linha = br.readLine()) != null) {
@@ -163,34 +160,15 @@ public class Gravacao {
 
     // Função para remontar o objeto Paciente a partir do texto
     private Paciente converterLinhaParaPaciente(String linha) {
-        if (linha.contains("|")) {
-            String[] dados = linha.split("\\|");
-            if (dados.length < 4) {
-                return null;
-            }
-            String nome = dados[0].trim();
-            String endereco = dados[1].trim();
-            String cpf = dados[2].trim();
-            String telefone = dados[3].trim();
-            return new Paciente(nome, endereco, cpf, telefone);
-        }
-
-        String[] dados = linha.split(",");
+        String[] dados = linha.split("\\|");
         if (dados.length < 4) {
             return null;
         }
 
         String nome = dados[0].trim();
-        String telefone = dados[dados.length - 1].trim();
-        String cpf = dados[dados.length - 2].trim();
-        StringBuilder enderecoBuilder = new StringBuilder();
-        for (int i = 1; i < dados.length - 2; i++) {
-            if (enderecoBuilder.length() > 0) {
-                enderecoBuilder.append(",");
-            }
-            enderecoBuilder.append(dados[i].trim());
-        }
-        String endereco = enderecoBuilder.toString();
+        String endereco = dados[1].trim();
+        String cpf = dados[2].trim();
+        String telefone = dados[3].trim();
 
         return new Paciente(nome, endereco, cpf, telefone);
     }
@@ -209,14 +187,9 @@ public class Gravacao {
             String linha;
             while ((linha = br.readLine()) != null) {
                 if (linha.trim().isEmpty()) continue;
-                String[] dados = linha.split(",");
+                String[] dados = linha.split("\\|");
                 if (dados.length >= 4) {
-                    String cpfDaLinha;
-                    if (linha.contains("|")) {
-                        cpfDaLinha = linha.split("\\|")[2].trim();
-                    } else {
-                        cpfDaLinha = dados[dados.length - 2].trim();
-                    }
+                    String cpfDaLinha = dados[2].trim();
 
                     // Só adiciona na lista se o CPF for diferente do que queremos remover
                     if (!cpfDaLinha.equalsIgnoreCase(cpfParaRemover.trim())) {
@@ -300,8 +273,8 @@ public class Gravacao {
     // Salva consulta no arquivo com formato estruturado (vírgula separada)
     public void salvarNovaConsulta(Consulta consulta) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivoConsultas, true))) {
-            // Formato: id,CPF,CRM,data(dd/MM/yyyy),diagnostico
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            // Formato: id,CPF,CRM,dataHora(dd/MM/yyyy HH:mm),diagnostico
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             String dataFormatada = consulta.getDataConsulta().format(formatter);
             String linha = consulta.getIdConsulta() + "," +
                           consulta.getPaciente().getCpf() + "," +
@@ -317,7 +290,6 @@ public class Gravacao {
 
     // Lê o arquivo e preenche a memória da Clínica com consultas
     public void carregarConsultas(Clinica c) {
-        if (!arquivoConsultas.exists()) return;
         try (BufferedReader br = new BufferedReader(new FileReader(arquivoConsultas))) {
             String linha;
             while ((linha = br.readLine()) != null) {
@@ -359,11 +331,10 @@ public class Gravacao {
                 return null;
             }
 
-            // Converte a data
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            // Converte data e horario no padrao atual do arquivo.
             try {
-                LocalDate localDate = LocalDate.parse(dataStr, formatter);
-                LocalDateTime dataConsulta = localDate.atStartOfDay();
+                DateTimeFormatter formatterDataHora = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                LocalDateTime dataConsulta = LocalDateTime.parse(dataStr, formatterDataHora);
 
                 Consulta consulta = new Consulta(medico, paciente, dataConsulta, diagnostico, id);
                 return consulta;

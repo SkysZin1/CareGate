@@ -4,7 +4,8 @@ package entities;
 
 import interfaces.Faturavel;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
 
 public class MedicoCirurgiao extends Medico implements Faturavel {
 
@@ -17,7 +18,7 @@ public class MedicoCirurgiao extends Medico implements Faturavel {
 
     @Override
     public String paraTexto() {
-        return "Cirurgiao, " + getNome() + ", " + getCRM() + ", " + getEspecialidade() + ", " + getIdade() + " anos, " + getValorConsultaBase() + " reais por consulta";
+        return "Cirurgiao, " + getNome() + ", " + getCRM() + ", " + getEspecialidade() + ", " + getIdade() + ", " + getValorConsultaBase();
     }
 
     @Override
@@ -28,6 +29,16 @@ public class MedicoCirurgiao extends Medico implements Faturavel {
     @Override
     public String obterProtocoloAtendimento() {
         return "Diagnosticar, avaliar e realizar intervenções cirúrgicas";
+    }
+
+    @Override
+    protected AgendaMedico criarAgendaPadrao() {
+        return new AgendaMedico("Tarde", Arrays.asList(
+                LocalTime.of(13, 0),
+                LocalTime.of(14, 0),
+                LocalTime.of(15, 0),
+                LocalTime.of(16, 0)
+        ));
     }
 
     @Override

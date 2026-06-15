@@ -3,6 +3,9 @@
 package application;
 
 import entities.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -287,19 +290,63 @@ public class Menu {
             esperar(2000);
             return;
         }
-        System.out.println("Digite a data da consulta (dd/MM/yyyy)");
-        String data = sc.nextLine().trim();
-
-        int id = gravacao.getIdUltimaConsulta() + 1; // Gera um ID único para a nova consulta
-        Consulta consulta = clinica.agendarConsulta(cpf, crm, data, id);
-        if (consulta == null) {
-            System.out.println("Falha ao agendar a consulta. Verifique CPF, CRM e formato da data (dd/MM/yyyy).");
+        List<LocalDateTime> horariosDisponiveis = clinica.getHorariosDisponiveis(crm);
+        horariosDisponiveis.removeIf(horario -> pacienteTemConsultaNoHorario(clinica, cpf, horario));
+        if (horariosDisponiveis.isEmpty()) {
+            System.out.println("Não há horários disponíveis para este médico e paciente nos próximos 7 dias.");
             esperar(2000);
             return;
         }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        System.out.println("Agenda do médico: turno " + medico.getAgenda().getTurno());
+        System.out.println("Escolha um dos horários disponíveis na próxima semana:");
+        for (int i = 0; i < horariosDisponiveis.size(); i++) {
+            System.out.printf("[%d] %s%n", i + 1, horariosDisponiveis.get(i).format(formatter));
+        }
+        System.out.println("[0] Voltar");
+
+        int opcaoHorario;
+        while (true) {
+            System.out.println("Digite a opção desejada:");
+            String entrada = sc.nextLine().trim();
+
+            try {
+                opcaoHorario = Integer.parseInt(entrada);
+            } catch (NumberFormatException e) {
+                System.out.println("Opção inválida! Digite um número da lista.");
+                continue;
+            }
+
+            if (opcaoHorario == 0) {
+                return;
+            }
+
+            if (opcaoHorario >= 1 && opcaoHorario <= horariosDisponiveis.size()) {
+                break;
+            }
+
+            System.out.println("Opção inválida! Escolha um valor entre 0 e " + horariosDisponiveis.size() + ".");
+        }
+
+        LocalDateTime dataHoraConsulta = horariosDisponiveis.get(opcaoHorario - 1);
+
+        int id = gravacao.getIdUltimaConsulta() + 1; // Gera um ID único para a nova consulta
+        Consulta consulta = clinica.agendarConsulta(cpf, crm, dataHoraConsulta, id);
         gravacao.salvarNovaConsulta(consulta);
         System.out.println("Consulta agendada com sucesso!");
         esperar(2000); // Tempo para o usuario ver a mensagem de sucesso
+    }
+
+    private boolean pacienteTemConsultaNoHorario(Clinica clinica, String cpf, LocalDateTime dataHoraConsulta) {
+        for (Consulta consulta : clinica.getListaConsultas()) {
+            boolean mesmoPaciente = consulta.getPaciente().getCpf().equals(cpf);
+            boolean mesmoHorario = consulta.getDataConsulta().equals(dataHoraConsulta);
+            if (mesmoPaciente && mesmoHorario) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void removerConsulta(Clinica clinica, Scanner sc, Gravacao gravacao){
