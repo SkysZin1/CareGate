@@ -2,11 +2,13 @@ package entities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Clinica {
 
@@ -65,25 +67,43 @@ public class Clinica {
         return mapaConsulta.get(idConsulta);
     }
 
-    public Consulta agendarConsulta(String cpf, String crm, String data, int idConsulta) {
+    public Consulta agendarConsulta(String cpf, String crm, LocalDateTime dataHoraConsulta, int idConsulta) {
         Medico medico = getMedicoByCRM(crm.trim());
         Paciente paciente = getPacienteByCPF(cpf.trim());
-        if (medico == null || paciente == null) {
-            return null;
-        }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDateTime dataConsulta;
-        try {
-            LocalDate localDate = LocalDate.parse(data, formatter);
-            dataConsulta = localDate.atStartOfDay();
-        } catch (DateTimeParseException e) {
-            return null;
-        }
-
-        Consulta consulta = new Consulta(medico, paciente, dataConsulta, "", idConsulta);
+        Consulta consulta = new Consulta(medico, paciente, dataHoraConsulta, "", idConsulta);
         addConsulta(consulta);
         return consulta;
+    }
+
+    public List<LocalDateTime> getHorariosDisponiveis(String crm) {
+        Medico medico = getMedicoByCRM(crm.trim());
+        if (medico == null) {
+            return new ArrayList<>();
+        }
+
+        LocalDateTime agora = LocalDateTime.now();
+        LocalDate hoje = agora.toLocalDate();
+        Set<LocalDateTime> horariosOcupados = new HashSet<>();
+
+        for (Consulta consulta : historicoConsulta) {
+            if (consulta.getMedico().getCRM().equalsIgnoreCase(medico.getCRM())) {
+                horariosOcupados.add(consulta.getDataConsulta());
+            }
+        }
+
+        List<LocalDateTime> horariosDisponiveis = new ArrayList<>();
+        for (int dia = 0; dia < 7; dia++) {
+            LocalDate data = hoje.plusDays(dia);
+            for (LocalTime horario : medico.getAgenda().getHorarios()) {
+                LocalDateTime dataHora = data.atTime(horario);
+                if (dataHora.isAfter(agora) && !horariosOcupados.contains(dataHora)) {
+                    horariosDisponiveis.add(dataHora);
+                }
+            }
+        }
+
+        return horariosDisponiveis;
     }
 
     public void getMedicos() {
@@ -105,12 +125,12 @@ public class Clinica {
 
 
     public void getHistoricoConsulta() {
-        System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", "id", "Médico", "Paciente", "Data", "Diagnostico");
+        System.out.printf("%-15s %-15s %-15s %-18s %-15s%n", "id", "Médico", "Paciente", "Data/Horário", "Diagnostico");
         System.out.println("--------------------------------------------------------------------------------");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         for (Consulta consulta : historicoConsulta){
             String dataFormatada = consulta.getDataConsulta().format(formatter);
-            System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", consulta.getIdConsulta(), consulta.getMedico().getNome(), consulta.getPaciente().getNome(), dataFormatada, consulta.getDiagnostico());
+            System.out.printf("%-15s %-15s %-15s %-18s %-15s%n", consulta.getIdConsulta(), consulta.getMedico().getNome(), consulta.getPaciente().getNome(), dataFormatada, consulta.getDiagnostico());
         }
     }
 

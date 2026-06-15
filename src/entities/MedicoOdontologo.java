@@ -2,12 +2,9 @@
 
 package entities;
 
-import interfaces.Agendavel;
 import interfaces.Faturavel;
-import interfaces.Prescritor;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.Arrays;
 
 public class MedicoOdontologo extends Medico implements Faturavel {
 
@@ -31,7 +28,7 @@ public class MedicoOdontologo extends Medico implements Faturavel {
 
     @Override
     public String paraTexto() {
-        return "Odontologo, " + getNome() + ", " + getCRM() + ", " + getEspecialidade() + ", " + getIdade() + " anos, " + getValorConsultaBase() + " reais por consulta";
+        return "Odontologo, " + getNome() + ", " + getCRM() + ", " + getEspecialidade() + ", " + getIdade() + ", " + getValorConsultaBase();
     }
 
     @Override
@@ -42,6 +39,16 @@ public class MedicoOdontologo extends Medico implements Faturavel {
     @Override
     public String obterProtocoloAtendimento() {
         return "Prevenir, diagnosticar e tratar problemas que afetam os dentes, a gengiva, a língua, o céu da boca e os ossos da face";
+    }
+
+    @Override
+    protected AgendaMedico criarAgendaPadrao() {
+        return new AgendaMedico("Noite", Arrays.asList(
+                LocalTime.of(17, 0),
+                LocalTime.of(18, 0),
+                LocalTime.of(19, 0),
+                LocalTime.of(20, 0)
+        ));
     }
 
     @Override

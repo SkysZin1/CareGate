@@ -4,11 +4,10 @@ package entities;
 
 import interfaces.Faturavel;
 
-import java.time.LocalDateTime;
-
 public abstract class Medico implements Faturavel {
 private String nome, CRM, especialidade;
 private Integer idade, valorConsultaBase;
+private AgendaMedico agenda;
 
 
     public Medico(String nome, String CRM, String especialidade, Integer idade, Integer valorConsultaBase) {
@@ -29,6 +28,19 @@ private Integer idade, valorConsultaBase;
     public abstract Integer calcularValorConsulta();
 
     public abstract String obterProtocoloAtendimento();
+
+    protected abstract AgendaMedico criarAgendaPadrao();
+
+    public AgendaMedico getAgenda() {
+        if (agenda == null) {
+            agenda = criarAgendaPadrao();
+        }
+        return agenda;
+    }
+
+    public void setAgenda(AgendaMedico agenda) {
+        this.agenda = agenda;
+    }
 
     public String getNome() {
         return nome;

@@ -63,12 +63,12 @@ public class Paciente {
     }
 
     public void getHistoricoConsulta() {
-        System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", "id", "Médico", "Paciente", "Data", "Diagnostico");
+        System.out.printf("%-15s %-15s %-15s %-18s %-15s%n", "id", "Médico", "Paciente", "Data/Horário", "Diagnostico");
         System.out.println("--------------------------------------------------------------------------------");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         for (Consulta consulta : consultas){
             String dataFormatada = consulta.getDataConsulta().format(formatter);
-            System.out.printf("%-15s %-15s %-15s %-15s %-15s%n", consulta.getIdConsulta(), consulta.getMedico().getNome(), consulta.getPaciente().getNome(), dataFormatada, consulta.getDiagnostico());
+            System.out.printf("%-15s %-15s %-15s %-18s %-15s%n", consulta.getIdConsulta(), consulta.getMedico().getNome(), consulta.getPaciente().getNome(), dataFormatada, consulta.getDiagnostico());
         }
     }
 
