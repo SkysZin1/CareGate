@@ -31,7 +31,6 @@ CareGate/
 |   |-- entities/      # Classes principais do domínio da clínica
 |   `-- interfaces/    # Contratos usados por entidades do sistema
 |-- data/              # Arquivos locais usados para armazenar os dados
-|-- Front/             # Protótipo inicial de interface web
 |-- run.bat            # Script para compilar e executar no Windows
 `-- README.md
 ```
