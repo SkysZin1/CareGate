@@ -20,7 +20,7 @@ public class Gravacao {
     private final File arquivoPacientes;
     private final File arquivoConsultas;
 
-    // Checa se o arquivo existe e se não está vazio
+    // Checa se o arquivo de medicos existe e se não está vazio
     public boolean arquivoTemDados() {
         return arquivoMedicos.exists() && arquivoMedicos.length() > 0;
     }
@@ -35,10 +35,6 @@ public class Gravacao {
         return arquivoConsultas.exists() && arquivoConsultas.length() > 0;
     }
 
-    // das classes (por exemplo build/). Tentamos determinar o root do projeto
-    // de forma robusta: primeiro consideramos o working directory (user.dir) se
-    // aparentar ser a raiz do projeto; caso contrário usamos a localização das
-    // classes e subimos diretórios quando necessário (ex.: build/, out/production/).
     public Gravacao() {
         File projectRoot = null;
 
@@ -130,7 +126,6 @@ public class Gravacao {
         }
     }
 
-    // ======= Funções de pacientes (antes em GravacaoPaciente) =======
     // Salva paciente no final do arquivo
     public void salvarNovoPaciente(Paciente paciente) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivoPacientes, true))) {
@@ -239,7 +234,7 @@ public class Gravacao {
 
         List<String> linhasQueFicam = new ArrayList<>();
 
-        // Passo 1 e 2: Ler tudo e guardar apenas quem nao tem o CRM informado
+        // Ler tudo e guardar apenas quem nao tem o CRM informado
         try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
             String linha;
             while ((linha = br.readLine()) != null) {
