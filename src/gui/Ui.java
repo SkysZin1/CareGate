@@ -13,6 +13,7 @@ public final class Ui {
     public static final Color PRIMARY = new Color(0, 137, 146);
     public static final Color PRIMARY_DARK = new Color(0, 105, 112);
     public static final Color SUCCESS = new Color(36, 166, 97);
+    public static final Color DANGER = new Color(205, 64, 64);
     public static final Color TEXT = new Color(17, 24, 39);
     public static final Color MUTED = new Color(91, 101, 120);
     public static final Color BORDER = new Color(220, 225, 232);
@@ -28,12 +29,14 @@ public final class Ui {
     public static JPanel card() {
         JPanel panel = new JPanel();
         panel.setBackground(CARD);
+        panel.putClientProperty("FlatLaf.style", "arc: 12");
         panel.setBorder(new RoundedBorder(BORDER, 12));
         return panel;
     }
 
     public static JButton primaryButton(String text) {
         JButton button = new JButton(text);
+        button.putClientProperty("FlatLaf.style", "arc: 10; borderWidth: 0; focusWidth: 0; innerFocusWidth: 0");
         button.setFont(font(14, Font.BOLD));
         button.setForeground(Color.WHITE);
         button.setBackground(SUCCESS);
@@ -46,6 +49,7 @@ public final class Ui {
 
     public static JButton secondaryButton(String text) {
         JButton button = new JButton(text);
+        button.putClientProperty("FlatLaf.style", "arc: 9; borderColor: #dce1e8; focusWidth: 1; innerFocusWidth: 0");
         button.setFont(font(13, Font.PLAIN));
         button.setForeground(TEXT);
         button.setBackground(Color.WHITE);
@@ -55,8 +59,21 @@ public final class Ui {
         return button;
     }
 
+    public static JButton dangerButton(String text) {
+        JButton button = new JButton(text);
+        button.putClientProperty("FlatLaf.style", "arc: 9; borderWidth: 0; focusWidth: 1; innerFocusWidth: 0");
+        button.setFont(font(13, Font.BOLD));
+        button.setForeground(Color.WHITE);
+        button.setBackground(DANGER);
+        button.setBorder(new RoundedBorder(new Color(180, 49, 49), 9));
+        button.setFocusPainted(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return button;
+    }
+
     public static JTextField textField() {
         JTextField field = new JTextField();
+        field.putClientProperty("FlatLaf.style", "arc: 8; focusWidth: 1; innerFocusWidth: 0");
         field.setFont(font(13, Font.PLAIN));
         field.setBorder(new RoundedBorder(BORDER, 8));
         field.setPreferredSize(new Dimension(120, 38));
@@ -65,6 +82,7 @@ public final class Ui {
 
     public static JTextArea textArea() {
         JTextArea area = new JTextArea(4, 20);
+        area.putClientProperty("FlatLaf.style", "arc: 8; focusWidth: 1; innerFocusWidth: 0");
         area.setFont(font(13, Font.PLAIN));
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
@@ -96,6 +114,7 @@ public final class Ui {
         table.setSelectionBackground(new Color(225, 245, 246));
         table.setSelectionForeground(TEXT);
         table.setFillsViewportHeight(true);
+        table.putClientProperty("FlatLaf.style", "showHorizontalLines: true; showVerticalLines: true");
 
         JTableHeader header = table.getTableHeader();
         header.setFont(font(13, Font.BOLD));

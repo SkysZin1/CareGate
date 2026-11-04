@@ -1,43 +1,41 @@
 @echo off
 setlocal enabledelayedexpansion
 
-REM Define diretórios
 set SOURCE_DIR=%~dp0src
 set BUILD_DIR=%~dp0build
-set TITLE=CareGate - Sistema de Gestao de Clinica
+set LIB_DIR=%~dp0lib
+set JAVA_OPTS=--enable-native-access=ALL-UNNAMED
+set TITLE=CareGate - Console
 
-REM Cria pastas build se não existir
-if not exist "%BUILD_DIR%\application" mkdir "%BUILD_DIR%\application"
-if not exist "%BUILD_DIR%\entities" mkdir "%BUILD_DIR%\entities"
-
-REM Limpa arquivos .class antigos
-for /d %%i in ("%BUILD_DIR%\*") do del /q "%%i\*.class" 2>nul
-
-REM Compila todos os .java da pasta source para build
-echo Compilando...
-pushd "%SOURCE_DIR%"
-javac -d "%BUILD_DIR%" application\*.java entities\*.java
-set "JC_ERR=%ERRORLEVEL%"
-popd
-if %JC_ERR% neq 0 (
-    exit /b %JC_ERR%
-)
-
-if %errorlevel% neq 0 (
+if not exist "%LIB_DIR%\sqlite-jdbc.jar" (
     echo.
-    echo [ERRO] Falha na compilacao!
+    echo [ERRO] Driver SQLite nao encontrado em lib\sqlite-jdbc.jar
+    echo Adicione o sqlite-jdbc.jar na pasta lib antes de executar.
     pause
     exit /b 1
 )
 
-REM Executa
+if not exist "%BUILD_DIR%" mkdir "%BUILD_DIR%"
+
+echo Compilando versao console...
+pushd "%SOURCE_DIR%"
+javac -encoding UTF-8 -d "%BUILD_DIR%" repository\*.java service\*.java application\*.java entities\*.java interfaces\*.java
+set "JC_ERR=%ERRORLEVEL%"
+popd
+
+if %JC_ERR% neq 0 (
+    echo.
+    echo [ERRO] Falha na compilacao.
+    pause
+    exit /b %JC_ERR%
+)
+
 echo.
-echo [OK] Compilacao concluida com sucesso!
+echo [OK] Compilacao concluida com sucesso.
 echo.
-echo Iniciando aplicacao...
+echo Iniciando CareGate...
 echo.
 title %TITLE%
-java -cp "%BUILD_DIR%" application.Programa
+java %JAVA_OPTS% -cp "%BUILD_DIR%;%LIB_DIR%\*" application.Programa
 
 pause
-

@@ -5,6 +5,8 @@
 # Arquivos compilados Java
 *.class
 *.jar
+!lib/
+!lib/*.jar
 
 # Pastas de compilacao
 build/

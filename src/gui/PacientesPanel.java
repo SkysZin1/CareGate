@@ -1,17 +1,23 @@
 package gui;
 
-import entities.Clinica;
-import entities.Gravacao;
+import entities.Consulta;
 import entities.Paciente;
+import service.ClinicaService;
+import service.ServiceException;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
 
 public class PacientesPanel extends JPanel {
-    private final Clinica clinica;
-    private final Gravacao gravacao;
+    private final ClinicaService service;
     private final Runnable onDataChanged;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private final DefaultTableModel tableModel = new DefaultTableModel(
             new Object[]{"Nome", "CPF", "Telefone", "Endereco", "Consultas"}, 0
@@ -21,16 +27,17 @@ public class PacientesPanel extends JPanel {
             return false;
         }
     };
-
     private final JTable table = new JTable(tableModel);
+    private final TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+    private final JTextField filtroField = Ui.textField();
+
     private final JTextField nomeField = Ui.textField();
     private final JTextField cpfField = Ui.textField();
     private final JTextField telefoneField = Ui.textField();
     private final JTextField enderecoField = Ui.textField();
 
-    public PacientesPanel(Clinica clinica, Gravacao gravacao, Runnable onDataChanged) {
-        this.clinica = clinica;
-        this.gravacao = gravacao;
+    public PacientesPanel(ClinicaService service, Runnable onDataChanged) {
+        this.service = service;
         this.onDataChanged = onDataChanged;
 
         setLayout(new BorderLayout(0, 22));
@@ -42,9 +49,16 @@ public class PacientesPanel extends JPanel {
     }
 
     private JPanel createHeader() {
-        JPanel header = new JPanel(new BorderLayout());
+        JPanel header = new JPanel(new BorderLayout(16, 0));
         header.setOpaque(false);
         header.add(Ui.title("Pacientes"), BorderLayout.WEST);
+        filtroField.putClientProperty("JTextField.placeholderText", "Buscar paciente, CPF ou telefone");
+        filtroField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { aplicarFiltro(); }
+            public void removeUpdate(DocumentEvent e) { aplicarFiltro(); }
+            public void changedUpdate(DocumentEvent e) { aplicarFiltro(); }
+        });
+        header.add(filtroField, BorderLayout.EAST);
         return header;
     }
 
@@ -65,13 +79,22 @@ public class PacientesPanel extends JPanel {
         header.setOpaque(false);
         JLabel title = Ui.title("Lista de Pacientes");
         title.setFont(Ui.font(18, Font.BOLD));
-        JButton remover = Ui.secondaryButton("Remover selecionado");
-        remover.addActionListener(e -> removerPacienteSelecionado());
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        buttons.setOpaque(false);
+        JButton detalhes = Ui.secondaryButton("Detalhes");
+        detalhes.addActionListener(e -> mostrarDetalhes());
+        JButton editar = Ui.secondaryButton("Editar");
+        editar.addActionListener(e -> editarSelecionado());
+        JButton remover = Ui.secondaryButton("Remover");
+        remover.addActionListener(e -> removerSelecionado());
+        buttons.add(detalhes);
+        buttons.add(editar);
+        buttons.add(remover);
         header.add(title, BorderLayout.WEST);
-        header.add(remover, BorderLayout.EAST);
+        header.add(buttons, BorderLayout.EAST);
 
         Ui.styleTable(table);
-        table.setAutoCreateRowSorter(true);
+        table.setRowSorter(sorter);
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createLineBorder(Ui.BORDER));
 
@@ -121,49 +144,101 @@ public class PacientesPanel extends JPanel {
     }
 
     private void salvarPaciente() {
-        String nome = nomeField.getText().trim();
-        String cpf = cpfField.getText().trim();
-        String telefone = telefoneField.getText().trim();
-        String endereco = enderecoField.getText().trim();
-
-        if (nome.isEmpty() || cpf.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nome e CPF sao obrigatorios.");
-            return;
+        try {
+            service.cadastrarPaciente(nomeField.getText(), enderecoField.getText(), cpfField.getText(), telefoneField.getText());
+            limparCampos();
+            JOptionPane.showMessageDialog(this, "Paciente cadastrado com sucesso.");
+            onDataChanged.run();
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
         }
-
-        if (!cpf.matches("\\d{11}")) {
-            JOptionPane.showMessageDialog(this, "CPF deve ter 11 digitos, sem pontos ou tracos.");
-            return;
-        }
-
-        if (clinica.getPacienteByCPF(cpf) != null) {
-            JOptionPane.showMessageDialog(this, "Ja existe um paciente com esse CPF.");
-            return;
-        }
-
-        Paciente paciente = new Paciente(nome, endereco, cpf, telefone);
-        clinica.addPaciente(paciente);
-        gravacao.salvarNovoPaciente(paciente);
-        limparCampos();
-        JOptionPane.showMessageDialog(this, "Paciente cadastrado com sucesso.");
-        onDataChanged.run();
     }
 
-    private void removerPacienteSelecionado() {
+    private void editarSelecionado() {
+        Paciente paciente = pacienteSelecionado();
+        if (paciente == null) return;
+
+        JTextField nome = Ui.textField();
+        JTextField telefone = Ui.textField();
+        JTextField endereco = Ui.textField();
+        nome.setText(paciente.getNome());
+        telefone.setText(paciente.getTelefone());
+        endereco.setText(paciente.getEndereco());
+
+        JPanel form = new JPanel(new GridLayout(0, 1, 6, 6));
+        form.add(Ui.label("CPF: " + paciente.getCpf()));
+        form.add(Ui.label("Nome")); form.add(nome);
+        form.add(Ui.label("Telefone")); form.add(telefone);
+        form.add(Ui.label("Endereco")); form.add(endereco);
+
+        int result = JOptionPane.showConfirmDialog(this, form, "Editar paciente", JOptionPane.OK_CANCEL_OPTION);
+        if (result != JOptionPane.OK_OPTION) return;
+
+        try {
+            service.atualizarPaciente(paciente.getCpf(), nome.getText(), endereco.getText(), telefone.getText());
+            onDataChanged.run();
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+
+    private void mostrarDetalhes() {
+        Paciente paciente = pacienteSelecionado();
+        if (paciente == null) return;
+
+        StringBuilder detalhe = new StringBuilder();
+        detalhe.append("Nome: ").append(paciente.getNome())
+                .append("\nCPF: ").append(paciente.getCpf())
+                .append("\nTelefone: ").append(paciente.getTelefone())
+                .append("\nEndereco: ").append(paciente.getEndereco())
+                .append("\nConsultas: ").append(paciente.listarConsultas().size())
+                .append("\n\nHistorico:");
+
+        if (paciente.listarConsultas().isEmpty()) {
+            detalhe.append("\nSem consultas cadastradas.");
+        } else {
+            for (Consulta consulta : paciente.listarConsultas()) {
+                detalhe.append("\n#").append(consulta.getIdConsulta())
+                        .append(" - ").append(consulta.getDataConsulta().format(dateFormatter))
+                        .append(" - ").append(consulta.getMedico().getNome())
+                        .append(" (").append(consulta.getMedico().getEspecialidade()).append(")");
+            }
+        }
+
+        JOptionPane.showMessageDialog(this, detalhe.toString(), "Detalhes do paciente", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void removerSelecionado() {
+        Paciente paciente = pacienteSelecionado();
+        if (paciente == null) return;
+        int confirm = JOptionPane.showConfirmDialog(this, "Remover o paciente " + paciente.getCpf() + "?", "Confirmar remocao", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) return;
+        try {
+            service.removerPaciente(paciente.getCpf());
+            onDataChanged.run();
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+
+    private Paciente pacienteSelecionado() {
         int row = table.getSelectedRow();
         if (row < 0) {
             JOptionPane.showMessageDialog(this, "Selecione um paciente na tabela.");
-            return;
+            return null;
         }
         int modelRow = table.convertRowIndexToModel(row);
         String cpf = (String) tableModel.getValueAt(modelRow, 1);
-        int confirm = JOptionPane.showConfirmDialog(this, "Remover o paciente " + cpf + "?", "Confirmar remocao", JOptionPane.YES_NO_OPTION);
-        if (confirm != JOptionPane.YES_OPTION) {
-            return;
+        return service.buscarPaciente(cpf);
+    }
+
+    private void aplicarFiltro() {
+        String filtro = filtroField.getText().trim();
+        if (filtro.isEmpty()) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + Pattern.quote(filtro)));
         }
-        clinica.removePaciente(cpf);
-        gravacao.removerPacienteDoArquivo(cpf);
-        onDataChanged.run();
     }
 
     private void limparCampos() {
@@ -175,7 +250,7 @@ public class PacientesPanel extends JPanel {
 
     public void refresh() {
         tableModel.setRowCount(0);
-        for (Paciente paciente : clinica.listarPacientes()) {
+        for (Paciente paciente : service.listarPacientes()) {
             tableModel.addRow(new Object[]{
                     paciente.getNome(),
                     paciente.getCpf(),
@@ -184,5 +259,6 @@ public class PacientesPanel extends JPanel {
                     paciente.listarConsultas().size()
             });
         }
+        aplicarFiltro();
     }
 }

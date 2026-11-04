@@ -1,31 +1,29 @@
 package gui;
 
-import entities.Clinica;
 import entities.Consulta;
-import entities.Gravacao;
 import entities.Medico;
 import entities.Paciente;
+import service.ClinicaService;
+import service.ServiceException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.File;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Comparator;
-import java.util.List;
 
 public class DashboardPanel extends JPanel {
-    private final Clinica clinica;
-    private final Gravacao gravacao;
+    private final ClinicaService service;
     private final Runnable onDataChanged;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
     private final JLabel consultasHojeValue = new JLabel("0");
     private final JLabel pacientesValue = new JLabel("0");
+    private final JLabel medicosValue = new JLabel("0");
     private final JLabel proximasValue = new JLabel("0");
     private final DefaultTableModel tableModel = new DefaultTableModel(
             new Object[]{"Data", "Hora", "Paciente", "Medico", "Especialidade", "Situacao"}, 0
@@ -43,14 +41,10 @@ public class DashboardPanel extends JPanel {
     private final JComboBox<String> horaCombo = new JComboBox<>(new String[]{
             "08:00", "09:00", "10:30", "11:30", "14:00", "15:00", "16:30", "17:30"
     });
-    private final JComboBox<String> duracaoCombo = new JComboBox<>(new String[]{
-            "30 minutos", "45 minutos", "50 minutos"
-    });
     private final JTextArea observacoesArea = Ui.textArea();
 
-    public DashboardPanel(Clinica clinica, Gravacao gravacao, Runnable onDataChanged) {
-        this.clinica = clinica;
-        this.gravacao = gravacao;
+    public DashboardPanel(ClinicaService service, Runnable onDataChanged) {
+        this.service = service;
         this.onDataChanged = onDataChanged;
 
         setLayout(new BorderLayout());
@@ -67,6 +61,18 @@ public class DashboardPanel extends JPanel {
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
         header.add(Ui.title("Dashboard"), BorderLayout.WEST);
+
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        actions.setOpaque(false);
+
+        JButton resetar = Ui.dangerButton("Resetar banco");
+        resetar.addActionListener(e -> resetarBanco());
+        JButton relatorio = Ui.secondaryButton("Gerar relatorio");
+        relatorio.addActionListener(e -> gerarRelatorio());
+
+        actions.add(resetar);
+        actions.add(relatorio);
+        header.add(actions, BorderLayout.EAST);
         wrapper.add(header, BorderLayout.NORTH);
 
         JPanel center = new JPanel(new BorderLayout(22, 22));
@@ -84,45 +90,43 @@ public class DashboardPanel extends JPanel {
     }
 
     private JPanel createCards() {
-        JPanel cards = new JPanel(new GridLayout(1, 3, 18, 0));
+        JPanel cards = new JPanel(new GridLayout(1, 4, 18, 0));
         cards.setOpaque(false);
-        cards.add(statCard("Consultas de Hoje", consultasHojeValue, "Agendadas para hoje", new Color(10, 92, 176)));
-        cards.add(statCard("Pacientes Ativos", pacientesValue, "Total de pacientes ativos", Ui.SUCCESS));
-        cards.add(statCard("Proximas Consultas", proximasValue, "Proximos 7 dias", new Color(10, 92, 176)));
+        cards.add(statCard("Consultas Hoje", consultasHojeValue, "Agendadas para hoje", new Color(10, 92, 176)));
+        cards.add(statCard("Pacientes", pacientesValue, "Total de pacientes ativos", Ui.SUCCESS));
+        cards.add(statCard("Medicos", medicosValue, "Profissionais cadastrados", Ui.PRIMARY));
+        cards.add(statCard("Proximas", proximasValue, "Consultas em 7 dias", new Color(10, 92, 176)));
         return cards;
     }
 
     private JPanel statCard(String title, JLabel value, String subtitle, Color accent) {
         JPanel card = Ui.card();
-        card.setLayout(new BorderLayout(18, 0));
-        card.setBorder(BorderFactory.createCompoundBorder(new Ui.RoundedBorder(Ui.BORDER, 12), BorderFactory.createEmptyBorder(18, 18, 18, 18)));
+        card.setLayout(new BorderLayout(14, 0));
+        card.setBorder(BorderFactory.createCompoundBorder(new Ui.RoundedBorder(Ui.BORDER, 12), BorderFactory.createEmptyBorder(16, 16, 16, 16)));
 
-        JLabel icon = new JLabel(" ");
-        icon.setPreferredSize(new Dimension(72, 72));
-        icon.setOpaque(true);
-        icon.setBackground(new Color(accent.getRed(), accent.getGreen(), accent.getBlue(), 22));
-        icon.setBorder(new Ui.RoundedBorder(new Color(accent.getRed(), accent.getGreen(), accent.getBlue(), 35), 16));
+        JLabel marker = new JLabel(" ");
+        marker.setPreferredSize(new Dimension(12, 56));
+        marker.setOpaque(true);
+        marker.setBackground(accent);
 
         JPanel texts = new JPanel();
         texts.setOpaque(false);
         texts.setLayout(new BoxLayout(texts, BoxLayout.Y_AXIS));
 
         JLabel titleLabel = Ui.label(title);
-        titleLabel.setFont(Ui.font(15, Font.BOLD));
-
-        value.setFont(Ui.font(30, Font.BOLD));
+        titleLabel.setFont(Ui.font(14, Font.BOLD));
+        value.setFont(Ui.font(28, Font.BOLD));
         value.setForeground(accent);
-
         JLabel subtitleLabel = Ui.label(subtitle);
         subtitleLabel.setForeground(Ui.MUTED);
 
         texts.add(titleLabel);
-        texts.add(Box.createVerticalStrut(5));
-        texts.add(value);
         texts.add(Box.createVerticalStrut(4));
+        texts.add(value);
+        texts.add(Box.createVerticalStrut(2));
         texts.add(subtitleLabel);
 
-        card.add(icon, BorderLayout.WEST);
+        card.add(marker, BorderLayout.WEST);
         card.add(texts, BorderLayout.CENTER);
         return card;
     }
@@ -184,7 +188,6 @@ public class DashboardPanel extends JPanel {
         gbc.gridy++;
         form.add(dateTime, gbc);
 
-        addField(form, gbc, "Duracao", duracaoCombo);
         addField(form, gbc, "Observacoes", new JScrollPane(observacoesArea));
 
         JButton salvar = Ui.primaryButton("Salvar");
@@ -198,10 +201,9 @@ public class DashboardPanel extends JPanel {
 
     private void addField(JPanel form, GridBagConstraints gbc, String label, JComponent component) {
         gbc.gridy++;
-        JLabel labelComponent = Ui.label(label);
-        form.add(labelComponent, gbc);
+        form.add(Ui.label(label), gbc);
         gbc.gridy++;
-        component.setPreferredSize(new Dimension(120, component instanceof JScrollPane ? 72 : 38));
+        component.setPreferredSize(new Dimension(120, component instanceof JScrollPane ? 92 : 38));
         form.add(component, gbc);
     }
 
@@ -224,16 +226,48 @@ public class DashboardPanel extends JPanel {
         try {
             LocalDate data = LocalDate.parse(dataField.getText().trim(), dateFormatter);
             LocalTime hora = LocalTime.parse((String) horaCombo.getSelectedItem(), timeFormatter);
-            int id = gravacao.getIdUltimaConsulta() + 1;
-            String observacoes = observacoesArea.getText().trim();
-            Consulta consulta = new Consulta(medicoItem.medico, pacienteItem.paciente, LocalDateTime.of(data, hora), observacoes, id);
-            clinica.addConsulta(consulta);
-            gravacao.salvarNovaConsulta(consulta);
+            service.agendarConsulta(
+                    pacienteItem.paciente.getCpf(),
+                    medicoItem.medico.getCRM(),
+                    data,
+                    hora,
+                    observacoesArea.getText()
+            );
             observacoesArea.setText("");
             JOptionPane.showMessageDialog(this, "Consulta agendada com sucesso.");
             onDataChanged.run();
         } catch (DateTimeParseException ex) {
             JOptionPane.showMessageDialog(this, "Data invalida. Use o formato dd/MM/aaaa.");
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+
+    private void gerarRelatorio() {
+        try {
+            File file = service.gerarRelatorio();
+            JOptionPane.showMessageDialog(this, "Relatorio gerado em:\n" + file.getAbsolutePath());
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+
+    private void resetarBanco() {
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Isso vai apagar os dados atuais e recriar a base de exemplo.\nDeseja continuar?",
+                "Resetar banco de dados",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        try {
+            service.resetarBancoDeDados();
+            JOptionPane.showMessageDialog(this, "Banco de dados resetado com sucesso.");
+            onDataChanged.run();
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }
 
@@ -250,39 +284,27 @@ public class DashboardPanel extends JPanel {
 
     private void refreshComboBoxes() {
         pacienteCombo.removeAllItems();
-        for (Paciente paciente : clinica.listarPacientes()) {
+        for (Paciente paciente : service.listarPacientes()) {
             pacienteCombo.addItem(new PacienteItem(paciente));
         }
 
         medicoCombo.removeAllItems();
-        for (Medico medico : clinica.listarMedicos()) {
+        for (Medico medico : service.listarMedicos()) {
             medicoCombo.addItem(new MedicoItem(medico));
         }
         atualizarEspecialidadeSelecionada();
     }
 
     private void refreshCards() {
-        LocalDate hoje = LocalDate.now();
-        long consultasHoje = clinica.listarConsultas().stream()
-                .filter(consulta -> consulta.getDataConsulta().toLocalDate().equals(hoje))
-                .count();
-        long proximosSeteDias = clinica.listarConsultas().stream()
-                .filter(consulta -> {
-                    LocalDate data = consulta.getDataConsulta().toLocalDate();
-                    return !data.isBefore(hoje) && !data.isAfter(hoje.plusDays(7));
-                })
-                .count();
-
-        consultasHojeValue.setText(String.valueOf(consultasHoje));
-        pacientesValue.setText(String.valueOf(clinica.listarPacientes().size()));
-        proximasValue.setText(String.valueOf(proximosSeteDias));
+        consultasHojeValue.setText(String.valueOf(service.contarConsultasHoje()));
+        pacientesValue.setText(String.valueOf(service.listarPacientes().size()));
+        medicosValue.setText(String.valueOf(service.listarMedicos().size()));
+        proximasValue.setText(String.valueOf(service.contarProximasConsultas(7)));
     }
 
     private void refreshTable() {
         tableModel.setRowCount(0);
-        List<Consulta> consultas = clinica.listarConsultas();
-        consultas.sort(Comparator.comparing(Consulta::getDataConsulta));
-        for (Consulta consulta : consultas) {
+        for (Consulta consulta : service.listarConsultas()) {
             tableModel.addRow(new Object[]{
                     consulta.getDataConsulta().format(dateFormatter),
                     consulta.getDataConsulta().format(timeFormatter),

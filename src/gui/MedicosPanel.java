@@ -1,21 +1,20 @@
 package gui;
 
-import entities.Clinica;
-import entities.Gravacao;
 import entities.Medico;
-import entities.MedicoCirurgiao;
-import entities.MedicoClinico;
-import entities.MedicoOdontologo;
+import service.ClinicaService;
+import service.ServiceException;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.util.regex.Pattern;
 
 public class MedicosPanel extends JPanel {
-    private final Clinica clinica;
-    private final Gravacao gravacao;
+    private final ClinicaService service;
     private final Runnable onDataChanged;
-
     private final DefaultTableModel tableModel = new DefaultTableModel(
             new Object[]{"Nome", "CRM", "Especialidade", "Tipo", "Idade", "Valor"}, 0
     ) {
@@ -24,8 +23,10 @@ public class MedicosPanel extends JPanel {
             return false;
         }
     };
-
     private final JTable table = new JTable(tableModel);
+    private final TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+    private final JTextField filtroField = Ui.textField();
+
     private final JTextField nomeField = Ui.textField();
     private final JTextField crmField = Ui.textField();
     private final JTextField especialidadeField = Ui.textField();
@@ -33,9 +34,8 @@ public class MedicosPanel extends JPanel {
     private final JTextField valorField = Ui.textField();
     private final JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"Clinico", "Cirurgiao", "Odontologo"});
 
-    public MedicosPanel(Clinica clinica, Gravacao gravacao, Runnable onDataChanged) {
-        this.clinica = clinica;
-        this.gravacao = gravacao;
+    public MedicosPanel(ClinicaService service, Runnable onDataChanged) {
+        this.service = service;
         this.onDataChanged = onDataChanged;
 
         setLayout(new BorderLayout(0, 22));
@@ -47,9 +47,17 @@ public class MedicosPanel extends JPanel {
     }
 
     private JPanel createHeader() {
-        JPanel header = new JPanel(new BorderLayout());
+        JPanel header = new JPanel(new BorderLayout(16, 0));
         header.setOpaque(false);
         header.add(Ui.title("Medicos"), BorderLayout.WEST);
+
+        filtroField.putClientProperty("JTextField.placeholderText", "Buscar medico, CRM ou especialidade");
+        filtroField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { aplicarFiltro(); }
+            public void removeUpdate(DocumentEvent e) { aplicarFiltro(); }
+            public void changedUpdate(DocumentEvent e) { aplicarFiltro(); }
+        });
+        header.add(filtroField, BorderLayout.EAST);
         return header;
     }
 
@@ -70,13 +78,23 @@ public class MedicosPanel extends JPanel {
         header.setOpaque(false);
         JLabel title = Ui.title("Lista de Medicos");
         title.setFont(Ui.font(18, Font.BOLD));
-        JButton remover = Ui.secondaryButton("Remover selecionado");
-        remover.addActionListener(e -> removerMedicoSelecionado());
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        buttons.setOpaque(false);
+        JButton detalhes = Ui.secondaryButton("Detalhes");
+        detalhes.addActionListener(e -> mostrarDetalhes());
+        JButton editar = Ui.secondaryButton("Editar");
+        editar.addActionListener(e -> editarSelecionado());
+        JButton remover = Ui.secondaryButton("Remover");
+        remover.addActionListener(e -> removerSelecionado());
+        buttons.add(detalhes);
+        buttons.add(editar);
+        buttons.add(remover);
         header.add(title, BorderLayout.WEST);
-        header.add(remover, BorderLayout.EAST);
+        header.add(buttons, BorderLayout.EAST);
 
         Ui.styleTable(table);
-        table.setAutoCreateRowSorter(true);
+        table.setAutoCreateRowSorter(false);
+        table.setRowSorter(sorter);
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createLineBorder(Ui.BORDER));
 
@@ -141,58 +159,114 @@ public class MedicosPanel extends JPanel {
     }
 
     private void salvarMedico() {
-        String nome = nomeField.getText().trim();
-        String crm = crmField.getText().trim();
-        String especialidade = especialidadeField.getText().trim();
-        String tipo = (String) tipoCombo.getSelectedItem();
-
-        if (nome.isEmpty() || crm.isEmpty() || especialidade.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Preencha nome, CRM e especialidade.");
-            return;
-        }
-
-        if (clinica.getMedicoByCRM(crm) != null) {
-            JOptionPane.showMessageDialog(this, "Ja existe um medico com esse CRM.");
-            return;
-        }
-
         try {
-            int idade = Integer.parseInt(idadeField.getText().trim());
-            int valor = Integer.parseInt(valorField.getText().trim());
-            Medico medico;
-            if ("Cirurgiao".equals(tipo)) {
-                medico = new MedicoCirurgiao(nome, crm, especialidade, idade, valor);
-            } else if ("Odontologo".equals(tipo)) {
-                medico = new MedicoOdontologo(nome, crm, especialidade, idade, valor);
-            } else {
-                medico = new MedicoClinico(nome, crm, especialidade, idade, valor);
-            }
-
-            clinica.addMedico(medico);
-            gravacao.salvarNovoMedico(medico);
+            service.cadastrarMedico(
+                    (String) tipoCombo.getSelectedItem(),
+                    nomeField.getText(),
+                    crmField.getText(),
+                    especialidadeField.getText(),
+                    Integer.parseInt(idadeField.getText().trim()),
+                    Integer.parseInt(valorField.getText().trim())
+            );
             limparCampos();
             JOptionPane.showMessageDialog(this, "Medico cadastrado com sucesso.");
             onDataChanged.run();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Idade e valor devem ser numeros inteiros.");
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }
 
-    private void removerMedicoSelecionado() {
+    private void editarSelecionado() {
+        Medico medico = medicoSelecionado();
+        if (medico == null) return;
+
+        JTextField nome = Ui.textField();
+        JTextField especialidade = Ui.textField();
+        JTextField idade = Ui.textField();
+        JTextField valor = Ui.textField();
+        JComboBox<String> tipo = new JComboBox<>(new String[]{"Clinico", "Cirurgiao", "Odontologo"});
+
+        nome.setText(medico.getNome());
+        especialidade.setText(medico.getEspecialidade());
+        idade.setText(String.valueOf(medico.getIdade()));
+        valor.setText(String.valueOf(medico.getValorConsultaBase()));
+        tipo.setSelectedItem(service.tipoDoMedico(medico));
+
+        JPanel form = new JPanel(new GridLayout(0, 1, 6, 6));
+        form.add(Ui.label("CRM: " + medico.getCRM()));
+        form.add(Ui.label("Nome")); form.add(nome);
+        form.add(Ui.label("Especialidade")); form.add(especialidade);
+        form.add(Ui.label("Tipo")); form.add(tipo);
+        form.add(Ui.label("Idade")); form.add(idade);
+        form.add(Ui.label("Valor")); form.add(valor);
+
+        int result = JOptionPane.showConfirmDialog(this, form, "Editar medico", JOptionPane.OK_CANCEL_OPTION);
+        if (result != JOptionPane.OK_OPTION) return;
+
+        try {
+            service.atualizarMedico(
+                    medico.getCRM(),
+                    (String) tipo.getSelectedItem(),
+                    nome.getText(),
+                    especialidade.getText(),
+                    Integer.parseInt(idade.getText().trim()),
+                    Integer.parseInt(valor.getText().trim())
+            );
+            onDataChanged.run();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Idade e valor devem ser numeros inteiros.");
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+
+    private void mostrarDetalhes() {
+        Medico medico = medicoSelecionado();
+        if (medico == null) return;
+        String detalhe = "Nome: " + medico.getNome() +
+                "\nCRM: " + medico.getCRM() +
+                "\nTipo: " + service.tipoDoMedico(medico) +
+                "\nEspecialidade: " + medico.getEspecialidade() +
+                "\nIdade: " + medico.getIdade() +
+                "\nValor: R$ " + medico.getValorConsultaBase() +
+                "\nTempo medio: " + medico.obterTempoConsultaMin() + " minutos" +
+                "\n\nProtocolo:\n" + medico.obterProtocoloAtendimento();
+        JOptionPane.showMessageDialog(this, detalhe, "Detalhes do medico", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void removerSelecionado() {
+        Medico medico = medicoSelecionado();
+        if (medico == null) return;
+        int confirm = JOptionPane.showConfirmDialog(this, "Remover o medico " + medico.getCRM() + "?", "Confirmar remocao", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) return;
+        try {
+            service.removerMedico(medico.getCRM());
+            onDataChanged.run();
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+
+    private Medico medicoSelecionado() {
         int row = table.getSelectedRow();
         if (row < 0) {
             JOptionPane.showMessageDialog(this, "Selecione um medico na tabela.");
-            return;
+            return null;
         }
         int modelRow = table.convertRowIndexToModel(row);
         String crm = (String) tableModel.getValueAt(modelRow, 1);
-        int confirm = JOptionPane.showConfirmDialog(this, "Remover o medico " + crm + "?", "Confirmar remocao", JOptionPane.YES_NO_OPTION);
-        if (confirm != JOptionPane.YES_OPTION) {
-            return;
+        return service.buscarMedico(crm);
+    }
+
+    private void aplicarFiltro() {
+        String filtro = filtroField.getText().trim();
+        if (filtro.isEmpty()) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + Pattern.quote(filtro)));
         }
-        clinica.removeMedico(crm);
-        gravacao.removerMedicoDoArquivo(crm);
-        onDataChanged.run();
     }
 
     private void limparCampos() {
@@ -206,21 +280,16 @@ public class MedicosPanel extends JPanel {
 
     public void refresh() {
         tableModel.setRowCount(0);
-        for (Medico medico : clinica.listarMedicos()) {
+        for (Medico medico : service.listarMedicos()) {
             tableModel.addRow(new Object[]{
                     medico.getNome(),
                     medico.getCRM(),
                     medico.getEspecialidade(),
-                    tipoDoMedico(medico),
+                    service.tipoDoMedico(medico),
                     medico.getIdade(),
                     medico.getValorConsultaBase()
             });
         }
-    }
-
-    private String tipoDoMedico(Medico medico) {
-        if (medico instanceof MedicoCirurgiao) return "Cirurgiao";
-        if (medico instanceof MedicoOdontologo) return "Odontologo";
-        return "Clinico";
+        aplicarFiltro();
     }
 }

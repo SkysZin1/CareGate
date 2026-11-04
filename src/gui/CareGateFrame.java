@@ -1,7 +1,6 @@
 package gui;
 
-import entities.Clinica;
-import entities.Gravacao;
+import service.ClinicaService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,8 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CareGateFrame extends JFrame {
-    private final Clinica clinica;
-    private final Gravacao gravacao;
+    private final ClinicaService service;
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel content = new JPanel(cardLayout);
     private final Map<String, SidebarButton> navigationButtons = new LinkedHashMap<>();
@@ -20,10 +18,9 @@ public class CareGateFrame extends JFrame {
     private PacientesPanel pacientesPanel;
     private ConsultasPanel consultasPanel;
 
-    public CareGateFrame(Clinica clinica, Gravacao gravacao) {
-        super("CareGate 2.0 - Sistema de Gestao de Clinica");
-        this.clinica = clinica;
-        this.gravacao = gravacao;
+    public CareGateFrame(ClinicaService service) {
+        super("CareGate - Sistema de Gestao de Clinica");
+        this.service = service;
 
         setSize(1280, 760);
         setMinimumSize(new Dimension(1100, 680));
@@ -41,10 +38,10 @@ public class CareGateFrame extends JFrame {
     private JPanel createContent() {
         content.setBackground(Ui.BACKGROUND);
 
-        dashboardPanel = new DashboardPanel(clinica, gravacao, this::refreshAll);
-        medicosPanel = new MedicosPanel(clinica, gravacao, this::refreshAll);
-        pacientesPanel = new PacientesPanel(clinica, gravacao, this::refreshAll);
-        consultasPanel = new ConsultasPanel(clinica, gravacao, this::refreshAll);
+        dashboardPanel = new DashboardPanel(service, this::refreshAll);
+        medicosPanel = new MedicosPanel(service, this::refreshAll);
+        pacientesPanel = new PacientesPanel(service, this::refreshAll);
+        consultasPanel = new ConsultasPanel(service, this::refreshAll);
 
         content.add(dashboardPanel, "Dashboard");
         content.add(medicosPanel, "Medicos");

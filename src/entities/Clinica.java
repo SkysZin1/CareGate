@@ -21,6 +21,15 @@ public class Clinica {
     public Clinica(){
     }
 
+    public void limparDados() {
+        medicos.clear();
+        pacientes.clear();
+        historicoConsulta.clear();
+        mapaMedico.clear();
+        mapaPaciente.clear();
+        mapaConsulta.clear();
+    }
+
     public void addMedico(Medico medico){
         medicos.add(medico);
         mapaMedico.put(medico.getCRM(), medico);
